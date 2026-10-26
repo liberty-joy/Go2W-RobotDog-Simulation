@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "purpose": "Stage 5 single-robot time/geometry fusion development scene; not a hardware calibration",
+  "lidar_profile": "configs/sensors/generic_rotary_64.json",
+  "rig_config": "configs/sensors/stage2_rig.json",
+  "stereo_config": "configs/sensors/stage3_stereo.json",
+  "sgbm_config": "configs/sensors/stage3_sgbm.json",
+  "object_id": "red_panel_01",
+  "object_surface_center_world_m": [2.3, 0.0, 0.55],
+  "object_width_m": 1.0,
+  "object_height_m": 0.9,
+  "warmup_s": 0.8,
+  "phase_duration_s": {"static": 0.7, "straight": 1.2, "turn": 2.4, "parked": 0.7},
+  "command": {"straight_v_m_s": 0.08, "turn_v_m_s": 0.03, "turn_yaw_rad_s": 0.55},
+  "capture_after_phase_s": {"static": 0.35, "straight": 0.55, "turn": 1.2, "parked": 0.45},
+  "pair_max_abs_delta_s": 0.05,
+  "manual_red_mask": {"r_min": 85, "r_over_g": 1.45, "r_over_b": 1.4, "min_pixels": 150},
+  "association": {"z_layer_tolerance_m": 0.12, "min_lidar_points": 8, "min_stereo_pixels": 80,
+    "max_lidar_stereo_disagreement_m": 0.1, "max_range_mad_m": 0.15},
+  "sensitivity": {"time_offsets_ms": [0, 10, 30, 50], "estimated_extrinsic_translation_x_m": [0.0, 0.01, 0.03],
+    "estimated_extrinsic_yaw_deg": [0.0, 0.5, 1.5]},
+  "seed": 52026
+}

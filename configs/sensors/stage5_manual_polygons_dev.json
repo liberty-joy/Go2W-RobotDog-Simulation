@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "run_id": "stage5_20261026T222539_capture1",
+  "annotation_method": "rectangular polygons drawn after visual inspection of the four saved public RGB images; no simulator object coordinates were used",
+  "scope": "development capture only; image SHA-256 must match before reuse",
+  "public_rgb": {
+    "static": {"sha256": "091daca59890b5828f7f37d3d0a96c33fbdc6111a9474b7f78e20427a6589dd0", "polygon_xy": [[219, 101], [416, 101], [416, 277], [219, 277]]},
+    "straight": {"sha256": "c94a508c80096057df44c2bb8c7bc7147e380c340b375fc71e423204d1abc34c", "polygon_xy": [[220, 103], [418, 103], [418, 281], [220, 281]]},
+    "turn": {"sha256": "aa0741dd962e6623326c65ed49e66fbc9ed11bd70f6cb9cf88e45e9eee0d5198", "polygon_xy": [[226, 92], [439, 92], [439, 284], [226, 284]]},
+    "parked": {"sha256": "d6d6b0330aef06df1a2d267de77db7fe1547c95283f9e3fc22ca1b5eb4c723a6", "polygon_xy": [[228, 93], [441, 93], [441, 284], [228, 284]]}
+  }
+}

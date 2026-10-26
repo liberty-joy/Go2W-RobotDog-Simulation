@@ -1,6 +1,6 @@
 # 传感流水线进度
 
-更新时间：2026-10-26（Asia/Shanghai）。**阶段4已完成，等待下一阶段指令。**
+更新时间：2026-10-26（Asia/Shanghai）。**阶段5开发链路已完成，等待下一阶段指令。**
 
 首读：[00复现总览与文档索引](../00_复现总览与文档索引.md)。阶段3开发run：`stage3_20261026T2110_clean_dev`；最终留出run：`stage3_20261026T2118_clean_final`；阶段2：`stage2_20261026T172917`；阶段1：`stage1_20261026T154717`；阶段0：`stage0_20261026T151923`。以前阶段是输入/历史基线，不冒充本次结果。
 
@@ -43,16 +43,25 @@
 - 机身网格可见/隐藏差异未观察到显著自扫变化；对象ID缺失、0.5m盲区限制了结论。公共RGB与雷达的视锥角几何交集平均12.65%，不是像素级遮挡检验。GUI未测试。
 - 失败轮次 `01–14` 和日志均保留，最终证据只引用 `214509_15`。详见[04_lidar.md](04_lidar.md)、[最终采集汇总](../../outputs/sensor_pipeline/stage4_20261026T214509_15/capture_summary.json)、[逐圈时间](../../outputs/sensor_pipeline/stage4_20261026T214509_15/scan_timing.csv)、[点云图](../../outputs/sensor_pipeline/stage4_20261026T214509_15/motion_pointcloud_timestamp.png)及[ROS订阅验收](../../outputs/sensor_pipeline/stage4_20261026T214509_15/ros_pointcloud2_received.json)。
 
+## 阶段5已完成（本次实际执行）
+
+- 新增同场景公共RGB/左右RGB/通用旋转LiDAR采集器，按静止→直行→转弯→停车保存图像、逐点时间、逐帧真值位姿和IMU时钟。最终有效run为`stage5_20261026T223623_accepted`，四段观测、60圈扫描，转弯实际0.2564rad（约14.7°）。不连接实机，不重训策略或下载大模型。
+- 明确`T_camera_lidar(t_p,t_e)=inverse(T_world_camera(t_e))·T_world_lidar(t_p)`；公共RGB光学+z向前。按实际每点时间插值LiDAR真值位姿到相机曝光，内参/零畸变投影后做画面过滤、同像素最近回波、前景深度层选择。该动态去畸变是Isaac真值oracle条件，非估计姿态验收。
+- 首轮`stage5_20261026T222539_capture1`用图像SHA绑定的人工多边形核对几何，再用无训练红色连通区域分割；手绘/自动掩码IoU为0.965–0.977。最终run采用自动分割与阶段3固定SGBM参数，输出对象`lidar_only/stereo_only/hybrid` JSON/CSV及投影图。
+- 静止、直行、转弯的LiDAR对象中心误差为1.80/2.51/4.79cm，双目为1.83/2.90/5.35cm。停车观察时两路中心差16.69cm，融合输出`unknown`/请求重观测；没有简单平均。该10cm冲突门限是在开发场景上从20cm修正，未进行独立留出验收。
+- 60圈与最近公共RGB曝光的软件时间配对绝对差中位33.254ms。测试0/10/30/50ms算法时间偏移与估计外参1/3cm、0.5/1.5°扰动共48条，未改变观测真值。核心几何/冲突逻辑5项通过。完整记录见[05_fusion.md](05_fusion.md)与[最终对象表](../../outputs/sensor_pipeline/stage5_20261026T223623_accepted/object_geometry.csv)。
+
 ## 当前综合限制 / 未完成
 
 - 阶段2实际GUI窗口和自动运行已检查，但没有把它称为人工W键交互验收；阶段1控制验证仍是等效前进指令重放和ROS跨进程检查。
 - 速度仍需校准：命令0.15 m/s时平均实速约0.190 m/s；新控制器坡面/摩擦/扰动鲁棒性尚未复验，不能沿用旧50次记录。
 - 阶段3是理想零畸变针孔仿真和离线算法；CameraInfo值以JSON文件保存，没有把左右图/CameraInfo发布为ROS话题，也没有真实设备标定、红外测量模型或滚动快门。
 - 重复纹理深度错误很大，无纹理coverage较低；当前SGBM输出不可直接解释成自由空间或安全避障输入。
-- 尚无视觉/雷达/语义融合、ROS IMU发布、SLAM/Nav2闭环、固定语义模型。odom/动态TF仍是真值，仅用于调通/评估。
+- 已有单红面板的离线双目/雷达对象级开发融合；尚无通用多对象语义融合、ROS IMU发布、SLAM/Nav2闭环或固定语义模型。odom/动态TF仍是真值，仅用于调通/评估。
 - 335L外观虽为Isaac6.2官方认证资产，项目测量仍是功能代理；OS0官方资产只有REV6/7，不能冒充REV8。ScanBuffer读取API已deprecated，下一阶段需迁移并校验ring/时间。
 - Ouster两份PDF网页可读，但Linux GET403；无本地文件和SHA，不伪造下载。首次启用MotionBVH约120秒启动，最终复跑约15.6秒，日志都保留。
 - 阶段4仅验收Isaac参数化理想旋转点云链路。没有厂家级雷达/IMU测量模型或噪声、azimuth/ring/intensity/objectId，未验证实机运动畸变、时钟同步、RGB逐像素遮挡、动态自扫分类；PointCloud2的TF为仿真真值，未做SLAM/去畸变，也不生成LaserScan或安全地图。没有运行GUI人工验收。
+- 阶段5融合依赖仿真真值外参与每点真值位姿，没有硬件同步、实机标定、可部署IMU/视觉里程计去畸变、运动目标或复杂遮挡验证；单红面板和已开发调参门限不代表留出集精度或安全导航。GUI人工检查未运行。阶段4关于“未做去畸变”的限制只适用于阶段4原始点云；阶段5新增的是离线oracle姿态补偿。
 
 ## 阶段0保留基线
 
@@ -65,4 +74,4 @@
 - [本次验收表](../../outputs/sensor_pipeline/stage1_20261026T154717/acceptance.csv)、[控制对照图](../../outputs/sensor_pipeline/stage1_20261026T154717/wheel_fix.png)
 - [传感器样例图](../../outputs/sensor_pipeline/stage1_20261026T154717/sensor_smoke_final/sensor_preview.png)、[本次原始证据](../../outputs/sensor_pipeline/stage1_20261026T154717/)
 
-下一阶段可在用户指示后基于当前有效mask与置信度推进视觉/雷达融合，再接ROS2闭环；未经处理不要将低置信/无效深度规划为自由空间。开发和最终留出结果留在Linux `outputs/sensor_pipeline/`。当前阶段4结束，等待用户指定下一阶段。
+下一阶段可在用户指示后建立独立纹理/遮挡/运动留出集与估计位姿来源，再评估ROS2闭环；未经处理不要将低置信/无效深度规划为自由空间。所有结果留在Linux `outputs/sensor_pipeline/`。当前阶段5结束，等待用户指定下一阶段。

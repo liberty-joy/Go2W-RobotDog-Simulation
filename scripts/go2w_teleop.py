@@ -26,10 +26,12 @@ p.add_argument('--stage3-stereo-config',type=Path,help='Optional Stage 3 synchro
 p.add_argument('--stage3-stereo-output',type=Path,help='New output directory for Stage 3 stereo captures')
 p.add_argument('--stage4-lidar-config',type=Path,help='Optional Stage 4 static and moving raw lidar capture configuration')
 p.add_argument('--stage4-lidar-output',type=Path,help='New output directory for Stage 4 lidar captures')
+p.add_argument('--stage5-fusion-config',type=Path,help='Optional Stage 5 synchronized camera/lidar capture configuration')
+p.add_argument('--stage5-fusion-output',type=Path,help='New output directory for Stage 5 fusion captures')
 a = p.parse_args()
 from isaacsim import SimulationApp
 app = SimulationApp({'headless': a.headless, 'width': 1280, 'height': 800,
-    'extra_args': ['--/renderer/raytracingMotion/enabled=true'] if (a.sensor_selection or a.sensor_rig_config or a.stage3_stereo_config or a.stage4_lidar_config) else []})
+    'extra_args': ['--/renderer/raytracingMotion/enabled=true'] if (a.sensor_selection or a.sensor_rig_config or a.stage3_stereo_config or a.stage4_lidar_config or a.stage5_fusion_config) else []})
 try:
     import numpy as np
     import carb.input
@@ -102,6 +104,10 @@ try:
     if a.stage3_stereo_config:
         import json
         camera_frequency=json.loads(a.stage3_stereo_config.read_text())['stereo']['frequency_hz']
+    if a.stage5_fusion_config:
+        import json
+        stage5_camera_config=json.loads(a.stage5_fusion_config.read_text())
+        camera_frequency=json.loads((root/stage5_camera_config['stereo_config']).read_text())['stereo']['frequency_hz']
     camera=Camera(prim_path=base_path+'/FrontCamera', resolution=(640,480), frequency=camera_frequency,
                   translation=np.array([0.32,0,0.08]))
     world.reset()
@@ -156,6 +162,11 @@ try:
         from sensor_pipeline.stage4_lidar_smoke import Stage4LidarSmoke
         stage4_lidar=Stage4LidarSmoke(a.stage4_lidar_config,a.stage4_lidar_output,root,stage,base_path,camera)
         stage4_lidar.ros_pointcloud_enabled=bool(a.ros2)
+    stage5_fusion=None
+    if a.stage5_fusion_config:
+        if not a.stage5_fusion_output:raise ValueError('--stage5-fusion-output is required')
+        from sensor_pipeline.stage5_fusion_capture import Stage5FusionCapture
+        stage5_fusion=Stage5FusionCapture(a.stage5_fusion_config,a.stage5_fusion_output,root,stage,base_path,camera)
     # initialize() attaches RGB by default.
     faulthandler.cancel_dump_traceback_later()
     set_camera_view(eye=np.array([2,2,1.3]),target=np.array([0,0,0.3]))
@@ -237,6 +248,8 @@ try:
         if ros is not None and not (keys & {'W','A','S','D'}):v,yaw=ros.velocity()
         if stage4_lidar is not None and stage4_lidar.phase == 'motion':
             v=float(stage4_lidar.config['motion_speed_m_s']);yaw=0.0
+        if stage5_fusion is not None:
+            v,yaw=stage5_fusion.command()
         if 'SPACE' in keys:
             v=yaw=0
             if ros is not None:ros.clear_command()
@@ -301,6 +314,9 @@ try:
             if stage4_lidar.done:
                 stage4_lidar.finalize_ros_summary()
                 break
+        if stage5_fusion is not None:
+            stage5_fusion.update(world.current_time,robot)
+            if stage5_fusion.done:break
         if ros is not None:
             if world.current_time+1e-6>=next_ros_time:
                 with_image=world.current_time+1e-6>=next_image_time
@@ -348,6 +364,7 @@ try:
     if asset_rig_smoke is not None:asset_rig_smoke.finish()
     if stage3_stereo is not None:stage3_stereo.finish()
     if stage4_lidar is not None:stage4_lidar.finish()
+    if stage5_fusion is not None:stage5_fusion.finish()
     if ros is not None:ros.close()
     if subscription is not None:interface.unsubscribe_to_keyboard_events(keyboard,subscription)
     print('GO2W_SIMULATION_COMPLETE',{'steps_in_last_cycle':steps,'mode':control_mode},flush=True)
