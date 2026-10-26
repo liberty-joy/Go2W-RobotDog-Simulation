@@ -1,0 +1,8 @@
+{
+  "selection_metric": "development-only fraction of all valid geometric pixels whose accepted estimate has absolute error <= 0.10 m; maximize this jointly with coverage, report coverage and MAE",
+  "candidates": [
+    {"name":"baseline_default","min_disparity":0,"num_disparities":128,"block_size":5,"P1":200,"P2":800,"disp12_max_diff":1,"pre_filter_cap":31,"uniqueness_ratio":10,"speckle_window_size":100,"speckle_range":2,"lr_tolerance_px":1.5,"min_depth_m":0.5,"max_depth_m":10.0,"display_max_disparity_px":64.0},
+    {"name":"stricter_uniqueness","min_disparity":0,"num_disparities":128,"block_size":5,"P1":200,"P2":800,"disp12_max_diff":1,"pre_filter_cap":31,"uniqueness_ratio":20,"speckle_window_size":100,"speckle_range":1,"lr_tolerance_px":1.0,"min_depth_m":0.5,"max_depth_m":10.0,"display_max_disparity_px":64.0},
+    {"name":"larger_support","min_disparity":0,"num_disparities":128,"block_size":7,"P1":392,"P2":1568,"disp12_max_diff":1,"pre_filter_cap":31,"uniqueness_ratio":15,"speckle_window_size":160,"speckle_range":1,"lr_tolerance_px":1.0,"min_depth_m":0.5,"max_depth_m":10.0,"display_max_disparity_px":64.0}
+  ]
+}

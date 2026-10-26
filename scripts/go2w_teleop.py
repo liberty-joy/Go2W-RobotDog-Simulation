@@ -22,10 +22,12 @@ p.add_argument('--sensor-selection',type=Path,help='Optional parameterized senso
 p.add_argument('--sensor-output',type=Path,help='New output directory for selection smoke')
 p.add_argument('--sensor-rig-config',type=Path,help='Optional Stage 2 local sensor-rig assembly configuration')
 p.add_argument('--sensor-rig-output',type=Path,help='New output directory for Stage 2 rig smoke')
+p.add_argument('--stage3-stereo-config',type=Path,help='Optional Stage 3 synchronized stereo dataset smoke configuration')
+p.add_argument('--stage3-stereo-output',type=Path,help='New output directory for Stage 3 stereo captures')
 a = p.parse_args()
 from isaacsim import SimulationApp
 app = SimulationApp({'headless': a.headless, 'width': 1280, 'height': 800,
-    'extra_args': ['--/renderer/raytracingMotion/enabled=true'] if (a.sensor_selection or a.sensor_rig_config) else []})
+    'extra_args': ['--/renderer/raytracingMotion/enabled=true'] if (a.sensor_selection or a.sensor_rig_config or a.stage3_stereo_config) else []})
 try:
     import numpy as np
     import carb.input
@@ -95,6 +97,9 @@ try:
     if a.sensor_selection:
         import json
         camera_frequency=json.loads(a.sensor_selection.read_text())['stereo']['frequency_hz']
+    if a.stage3_stereo_config:
+        import json
+        camera_frequency=json.loads(a.stage3_stereo_config.read_text())['stereo']['frequency_hz']
     camera=Camera(prim_path=base_path+'/FrontCamera', resolution=(640,480), frequency=camera_frequency,
                   translation=np.array([0.32,0,0.08]))
     world.reset()
@@ -138,6 +143,11 @@ try:
         if not a.sensor_rig_output:raise ValueError('--sensor-rig-output is required')
         from sensor_pipeline.asset_rig_smoke import AssetRigSmoke
         asset_rig_smoke=AssetRigSmoke(a.sensor_rig_config,a.sensor_rig_output,root,stage,base_path)
+    stage3_stereo=None
+    if a.stage3_stereo_config:
+        if not a.stage3_stereo_output:raise ValueError('--stage3-stereo-output is required')
+        from sensor_pipeline.stage3_stereo_smoke import Stage3StereoSmoke
+        stage3_stereo=Stage3StereoSmoke(a.stage3_stereo_config,a.stage3_stereo_output,root,stage,base_path,camera)
     # initialize() attaches RGB by default.
     faulthandler.cancel_dump_traceback_later()
     set_camera_view(eye=np.array([2,2,1.3]),target=np.array([0,0,0.3]))
@@ -263,6 +273,8 @@ try:
         world.step(render=True);steps+=1
         if selection_smoke is not None:selection_smoke.update(world.current_time)
         if asset_rig_smoke is not None:asset_rig_smoke.update(world.current_time)
+        if stage3_stereo is not None:stage3_stereo.update(world.current_time,robot)
+        if stage3_stereo is not None and stage3_stereo.done:break
         if ros is not None:
             if world.current_time+1e-6>=next_ros_time:
                 with_image=world.current_time+1e-6>=next_image_time
@@ -308,6 +320,7 @@ try:
     if diagnostic_file:diagnostic_file.close()
     if selection_smoke is not None:selection_smoke.finish()
     if asset_rig_smoke is not None:asset_rig_smoke.finish()
+    if stage3_stereo is not None:stage3_stereo.finish()
     if ros is not None:ros.close()
     if subscription is not None:interface.unsubscribe_to_keyboard_events(keyboard,subscription)
     print('GO2W_SIMULATION_COMPLETE',{'steps_in_last_cycle':steps,'mode':control_mode},flush=True)

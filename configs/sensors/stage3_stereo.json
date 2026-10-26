@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "purpose": "Stage 3 ideal synchronized RGB stereo functional proxy; not a physical camera calibration",
+  "coordinate_convention": "+X forward, +Y left, +Z up; optical images are pinhole projections",
+  "stereo": {
+    "width": 640,
+    "height": 480,
+    "frequency_hz": 10,
+    "horizontal_fov_deg": 80.0,
+    "pitch_down_deg": 5.0,
+    "focal_length_m": 0.018,
+    "cyclopean_translation_base_m": [0.32, 0.0, 0.08],
+    "left_translation_base_m": [0.32, 0.05, 0.08],
+    "right_translation_base_m": [0.32, -0.05, 0.08],
+    "baseline_m": 0.10,
+    "distortion_model": "none",
+    "distortion_coefficients": [0.0, 0.0, 0.0, 0.0, 0.0],
+    "calibration_status": "ideal pinhole generated from configured FOV and resolution; no real-device calibration claimed",
+    "expected_fx_px": 381.361,
+    "expected_fy_px": 381.361,
+    "camera_info_frame_ids": {
+      "public_rgb": "go2w_front_camera_optical_frame",
+      "left": "go2w_stereo_left_optical_frame",
+      "right": "go2w_stereo_right_optical_frame"
+    }
+  },
+  "capture": {
+    "warmup_frames_per_scene": 8,
+    "max_pair_wait_frames": 120,
+    "timestamp_tolerance_s": 1e-9,
+    "require_all_three_views_same_render_time": true,
+    "scene_classes": ["ideal_textured", "textureless", "repetitive", "occlusion"],
+    "distances_optical_z_m": [1.0, 2.0, 3.0, 5.0],
+    "development_distances_m": [1.0, 2.0],
+    "heldout_test_distances_m": [3.0, 5.0],
+    "plane_width_factor": 1.8,
+    "plane_height_factor": 1.6,
+    "plane_min_extent_m": 0.5,
+    "box_size_m": 0.4,
+    "occluder_center_offset_from_plane_m": 0.5,
+    "texture_seed": 31026
+  },
+  "interpretation": {
+    "sensor_model": "two ideal RGB pinhole cameras with global same-render-frame sampling; not Gemini SDK, IR, sensor noise or rolling shutter",
+    "public_semantics": "same central FrontCamera RGB view is saved for every scenario and is not substituted by a stereo view",
+    "ground_truth": "Isaac distance_to_image_plane geometric depth annotator saved separately and used only by evaluation; never read by matcher",
+    "depth_convention": "stereo estimate is metric optical-axis Z in meters; invalid values remain NaN with a separate mask"
+  }
+}
