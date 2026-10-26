@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "access_date": "2026-10-26",
+  "isaac_version": "6.2.0.0-rc.25+release.10547.7dfc9ea2.gl",
+  "asset_root": "sim/assets/sensors",
+  "categories": {
+    "sensor_usd_cad_appearance": "Gemini335L certified camera USD; OS0 family exterior and REV6/REV7 family USD",
+    "measurement_models_configs": "Gemini asset contains NVIDIA depth sensor metadata; Stage 2 smoke deliberately uses explicit ideal stereo proxy and generic rotary64 config",
+    "algorithm_source": "none downloaded in Stage 2; existing project import/smoke code only",
+    "pretrained_weights": "none downloaded; asset import and measurement smoke require no learned model"
+  },
+  "truth_boundaries": [
+    "Orbbec Gemini335L vendor USD is preserved and referenced as appearance/digital-twin evidence.",
+    "OS0 USD only exposes REV6/REV7; the target REV8 64-channel behavior remains a parameterized proxy.",
+    "Two camera prims or vendor depth output do not prove SDK stereo matching.",
+    "The project proxy does not model active IR, rolling shutter, factory beam calibration or hardware clocks."
+  ],
+  "resources": [
+    {
+      "category": "sensor USD/CAD appearance + embedded camera configuration",
+      "path": "sim/assets/sensors/vendor/nvidia_isaac_6_2/Orbbec/Gemini335L/orbbec_gemini_335L.usd",
+      "source_url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.2/Isaac/Sensors/Orbbec/Gemini335L/orbbec_gemini_335L.usd",
+      "source_version": "Isaac Sim 6.2 official asset catalog; no Git commit exposed; local bytes pinned by SHA-256",
+      "license": "NVIDIA Omniverse/Isaac content terms; vendor certification does not transfer hardware truth to derived proxies",
+      "bytes": 50671410,
+      "sha256": "0ca83218cb634694cca011be6f01674f20d39c17704d119259c7dd0c7b9f59da",
+      "vendor_original_unchanged": true
+    },
+    {
+      "category": "sensor USD assembly + variant index",
+      "path": "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0.usd",
+      "source_url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.2/Isaac/Sensors/Ouster/OS0/OS0.usd",
+      "source_version": "Isaac Sim 6.2 official asset catalog; no Git commit exposed; local bytes pinned by SHA-256",
+      "license": "NVIDIA Omniverse/Isaac content terms; vendor certification does not transfer hardware truth to derived proxies",
+      "bytes": 16032,
+      "sha256": "b11a455cd354e50d0c4370536f7c67a093fd0fdca3b0e6add457e887a6cfe626",
+      "vendor_original_unchanged": true
+    },
+    {
+      "category": "measurement model/config",
+      "path": "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0_REV6_128ch10hz1024res.usda",
+      "source_url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.2/Isaac/Sensors/Ouster/OS0/OS0_REV6_128ch10hz1024res.usda",
+      "source_version": "Isaac Sim 6.2 official asset catalog; no Git commit exposed; local bytes pinned by SHA-256",
+      "license": "NVIDIA Omniverse/Isaac content terms; vendor certification does not transfer hardware truth to derived proxies",
+      "bytes": 14903,
+      "sha256": "98854b516f8672da65a6a3d91099cd6f19710578551764d4a2fd831872267945",
+      "vendor_original_unchanged": true
+    },
+    {
+      "category": "measurement model/config",
+      "path": "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0_REV6_128ch10hz2048res.usda",
+      "source_url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.2/Isaac/Sensors/Ouster/OS0/OS0_REV6_128ch10hz2048res.usda",
+      "source_version": "Isaac Sim 6.2 official asset catalog; no Git commit exposed; local bytes pinned by SHA-256",
+      "license": "NVIDIA Omniverse/Isaac content terms; vendor certification does not transfer hardware truth to derived proxies",
+      "bytes": 14888,
+      "sha256": "a4c01a4711811647cf8456f29d3a36992677846adaa3fe75e72c4f6e0cdbfa54",
+      "vendor_original_unchanged": true
+    },
+    {
+      "category": "measurement model/config",
+      "path": "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0_REV6_128ch10hz512res.usda",
+      "source_url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.2/Isaac/Sensors/Ouster/OS0/OS0_REV6_128ch10hz512res.usda",
+      "source_version": "Isaac Sim 6.2 official asset catalog; no Git commit exposed; local bytes pinned by SHA-256",
+      "license": "NVIDIA Omniverse/Isaac content terms; vendor certification does not transfer hardware truth to derived proxies",
+      "bytes": 14964,
+      "sha256": "6c4e75a9d9d5f3f08fa1c1a014b9a01922aa2b92ca097f8f84b6de5e354d6469",
+      "vendor_original_unchanged": true
+    },
+    {
+      "category": "measurement model/config",
+      "path": "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0_REV6_128ch20hz1024res.usda",
+      "source_url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.2/Isaac/Sensors/Ouster/OS0/OS0_REV6_128ch20hz1024res.usda",
+      "source_version": "Isaac Sim 6.2 official asset catalog; no Git commit exposed; local bytes pinned by SHA-256",
+      "license": "NVIDIA Omniverse/Isaac content terms; vendor certification does not transfer hardware truth to derived proxies",
+      "bytes": 14888,
+      "sha256": "969e819c3cfe6cc69318d3c8e2574a9c85698fdea46d0c734c042c506cb0c0ea",
+      "vendor_original_unchanged": true
+    },
+    {
+      "category": "measurement model/config",
+      "path": "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0_REV6_128ch20hz512res.usda",
+      "source_url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.2/Isaac/Sensors/Ouster/OS0/OS0_REV6_128ch20hz512res.usda",
+      "source_version": "Isaac Sim 6.2 official asset catalog; no Git commit exposed; local bytes pinned by SHA-256",
+      "license": "NVIDIA Omniverse/Isaac content terms; vendor certification does not transfer hardware truth to derived proxies",
+      "bytes": 14898,
+      "sha256": "0cf6cb5e9343c1e0b76cfddb5c45e67d072f3184a88a550ef167916c52e3a05c",
+      "vendor_original_unchanged": true
+    },
+    {
+      "category": "measurement model/config",
+      "path": "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0_REV7_128ch10hz1024res.usda",
+      "source_url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.2/Isaac/Sensors/Ouster/OS0/OS0_REV7_128ch10hz1024res.usda",
+      "source_version": "Isaac Sim 6.2 official asset catalog; no Git commit exposed; local bytes pinned by SHA-256",
+      "license": "NVIDIA Omniverse/Isaac content terms; vendor certification does not transfer hardware truth to derived proxies",
+      "bytes": 14904,
+      "sha256": "614647d228b6bc637be2674953b0f8cd6bf2f10bcb0556656066b2a5fd1dfe5f",
+      "vendor_original_unchanged": true
+    },
+    {
+      "category": "measurement model/config",
+      "path": "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0_REV7_128ch10hz2048res.usda",
+      "source_url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.2/Isaac/Sensors/Ouster/OS0/OS0_REV7_128ch10hz2048res.usda",
+      "source_version": "Isaac Sim 6.2 official asset catalog; no Git commit exposed; local bytes pinned by SHA-256",
+      "license": "NVIDIA Omniverse/Isaac content terms; vendor certification does not transfer hardware truth to derived proxies",
+      "bytes": 14889,
+      "sha256": "3947804b75d07fac7d7c8c784d77069204f9f9cffac4aa8bfdaab31293eb9419",
+      "vendor_original_unchanged": true
+    },
+    {
+      "category": "measurement model/config",
+      "path": "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0_REV7_128ch10hz512res.usda",
+      "source_url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.2/Isaac/Sensors/Ouster/OS0/OS0_REV7_128ch10hz512res.usda",
+      "source_version": "Isaac Sim 6.2 official asset catalog; no Git commit exposed; local bytes pinned by SHA-256",
+      "license": "NVIDIA Omniverse/Isaac content terms; vendor certification does not transfer hardware truth to derived proxies",
+      "bytes": 14965,
+      "sha256": "418f1ce8426ea7d92324cade93275157b78eec7c371c9073a119747ec023eedf",
+      "vendor_original_unchanged": true
+    },
+    {
+      "category": "measurement model/config",
+      "path": "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0_REV7_128ch20hz1024res.usda",
+      "source_url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.2/Isaac/Sensors/Ouster/OS0/OS0_REV7_128ch20hz1024res.usda",
+      "source_version": "Isaac Sim 6.2 official asset catalog; no Git commit exposed; local bytes pinned by SHA-256",
+      "license": "NVIDIA Omniverse/Isaac content terms; vendor certification does not transfer hardware truth to derived proxies",
+      "bytes": 14889,
+      "sha256": "344506e755594e3ec631919224aa6b01a76029e038a0bc76acc23024a2320135",
+      "vendor_original_unchanged": true
+    },
+    {
+      "category": "measurement model/config",
+      "path": "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0_REV7_128ch20hz512res.usda",
+      "source_url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.2/Isaac/Sensors/Ouster/OS0/OS0_REV7_128ch20hz512res.usda",
+      "source_version": "Isaac Sim 6.2 official asset catalog; no Git commit exposed; local bytes pinned by SHA-256",
+      "license": "NVIDIA Omniverse/Isaac content terms; vendor certification does not transfer hardware truth to derived proxies",
+      "bytes": 14899,
+      "sha256": "51efcbe1ba719fd01b3e954a1339eddca12a25bf1752668df5d329ab13916ef8",
+      "vendor_original_unchanged": true
+    },
+    {
+      "category": "sensor USD/CAD appearance asset",
+      "path": "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/meshes/os0_mesh.usd",
+      "source_url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.2/Isaac/Sensors/Ouster/meshes/os0_mesh.usd",
+      "source_version": "Isaac Sim 6.2 official asset catalog; no Git commit exposed; local bytes pinned by SHA-256",
+      "license": "NVIDIA Omniverse/Isaac content terms; vendor certification does not transfer hardware truth to derived proxies",
+      "bytes": 240923,
+      "sha256": "36339a2ea7a8d9784755151def305757498f0f41b98188a505172e0ce6784432",
+      "vendor_original_unchanged": true
+    },
+    {
+      "category": "sensor USD/CAD appearance asset",
+      "path": "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/meshes/textures/sensor_color.png",
+      "source_url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.2/Isaac/Sensors/Ouster/meshes/textures/sensor_color.png",
+      "source_version": "Isaac Sim 6.2 official asset catalog; no Git commit exposed; local bytes pinned by SHA-256",
+      "license": "NVIDIA Omniverse/Isaac content terms; vendor certification does not transfer hardware truth to derived proxies",
+      "bytes": 9461,
+      "sha256": "fd31f81cea80192ae0a0ac5401d58b602384246c0772112547ee67e7efd560f7",
+      "vendor_original_unchanged": true
+    },
+    {
+      "category": "assembly layer",
+      "path": "sim/assets/sensors/assemblies/go2w_sensor_rig.usda",
+      "source_url": null,
+      "source_version": "project-authored Stage 2",
+      "license": "project-local; upstream referenced assets retain their own terms",
+      "bytes": 3910,
+      "sha256": "7efb2d9b737b010531c1f67065e75270e44a68cfcbbd48cf619e63129a3f32dc",
+      "vendor_original_unchanged": null
+    },
+    {
+      "category": "measurement model/config",
+      "path": "configs/sensors/stage2_rig.json",
+      "source_url": null,
+      "source_version": "project-authored Stage 2",
+      "license": "project-local; upstream referenced assets retain their own terms",
+      "bytes": 2060,
+      "sha256": "2f6f65871ac4f82636731dcdad71b1042b889a1dab308ab856bc489abc9ee3a1",
+      "vendor_original_unchanged": null
+    },
+    {
+      "category": "measurement model/config",
+      "path": "configs/sensors/generic_rotary_64.json",
+      "source_url": null,
+      "source_version": "project-authored Stage 2",
+      "license": "project-local; upstream referenced assets retain their own terms",
+      "bytes": 4942,
+      "sha256": "2fe92d988230ce9c2a210e702add9a4663fa5faddf7feb38bfe16a45594178d0",
+      "vendor_original_unchanged": null
+    }
+  ]
+}

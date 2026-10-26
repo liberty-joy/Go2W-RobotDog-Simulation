@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "status": "reversible Stage 2 assembly; not a procurement specification or a REV8 certified digital twin",
+  "rig_usd": "sim/assets/sensors/assemblies/go2w_sensor_rig.usda",
+  "parent_prim": "/World/Go2W/Geometry/base",
+  "coordinate_convention": "+X forward, +Y left, +Z up",
+  "appearance": {
+    "camera": {
+      "asset": "sim/assets/sensors/vendor/nvidia_isaac_6_2/Orbbec/Gemini335L/orbbec_gemini_335L.usd",
+      "authenticity": "NVIDIA Isaac Sim 6.2 asset certified by Orbbec",
+      "measurement_used_by_smoke": false
+    },
+    "lidar": {
+      "asset": "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0.usd",
+      "variant": "OS0_REV7_128ch10hz512res",
+      "authenticity": "NVIDIA Isaac Sim 6.2 OS0 family appearance/REV7 profile; not REV8",
+      "embedded_sensor_active": false
+    },
+    "collision": "none authored by assembly; vendor subtree audited at import",
+    "dynamic_mass": "not authored; rig is visual/measurement-only and follows base"
+  },
+  "stereo": {
+    "model": "ideal RGB pinhole functional proxy; no SDK depth and no IR photometry",
+    "width": 640,
+    "height": 480,
+    "frequency_hz": 10,
+    "horizontal_fov_deg": 80,
+    "pitch_down_deg": 5,
+    "baseline_m": 0.095,
+    "left_translation_base_m": [0.365, 0.0475, 0.095],
+    "right_translation_base_m": [0.365, -0.0475, 0.095]
+  },
+  "lidar": {
+    "profile": "configs/sensors/generic_rotary_64.json",
+    "model": "RTX parameterized functional proxy; uniform beam angles, not OS0 REV8 factory calibration",
+    "translation_base_m": [0, 0, 0.2],
+    "near_range_m": 0.5,
+    "far_range_m": 20.0,
+    "self_scan_guard_m": 0.48
+  },
+  "imu": {
+    "model": "Isaac physics ideal IMU; not IAM-20685HP noise/clock model",
+    "translation_base_m": [0, 0, 0.205],
+    "frequency_hz": 120
+  },
+  "capture": {
+    "sample_after_sim_s": 2.0,
+    "overview_eye_world_m": [1.15, -1.2, 1.05],
+    "overview_target_world_m": [0.05, 0, 0.55],
+    "scope": "single robot asset/import smoke; no matching, calibration or fusion acceptance"
+  }
+}

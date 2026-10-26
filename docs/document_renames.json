@@ -1,0 +1,64 @@
+[
+  {
+    "old": "安装说明.md",
+    "canonical": "docs/01_软件安装与环境_历史.md",
+    "old_is_compatibility_symlink": false,
+    "original_sha256": "a38f1ecf4e5c099c1fbbcd21fb422c28f6ddec5849ed97e87c99c2e9d011fba3",
+    "compatibility": "redirect Markdown entry"
+  },
+  {
+    "old": "显示与SSH修复记录.md",
+    "canonical": "docs/02_显示与SSH维护_历史.md",
+    "old_is_compatibility_symlink": false,
+    "original_sha256": "c54e53a3ddd088f5241b8879a5e9a07b682ad9bd80126d17791109b5dbd0e2bf",
+    "compatibility": "redirect Markdown entry"
+  },
+  {
+    "old": "docs/hardware_inventory.md",
+    "canonical": "docs/03_实机设备信息待确认.md",
+    "old_is_compatibility_symlink": true,
+    "original_sha256": "18258363557080659f5d103e18b63d8651e6f3af156425940fb1def57d4e5c27"
+  },
+  {
+    "old": "docs/从零到论文路线.md",
+    "canonical": "docs/10_从零到论文路线.md",
+    "old_is_compatibility_symlink": true,
+    "original_sha256": "a55d8e489c801b4834a1b7b6cb71b46e7f30cb03b52a78dad65c237daea3ea42"
+  },
+  {
+    "old": "docs/视觉雷达仿真实施提示词.md",
+    "canonical": "docs/11_传感流水线分阶段任务.md",
+    "old_is_compatibility_symlink": true,
+    "original_sha256": "1c09b9c239a4f7e34b64c867415f0372c8039b29a840bea8c4da45bc236a5766"
+  },
+  {
+    "old": "docs/Go2W键盘与相机.md",
+    "canonical": "docs/20_Go2W键盘控制与前置相机.md",
+    "old_is_compatibility_symlink": true,
+    "original_sha256": "351db4826f1c80c8eb74c548f7776ba1b0d677a960e5b98afe45bad3c30b2342"
+  },
+  {
+    "old": "docs/Go2W_ROS2与训练.md",
+    "canonical": "docs/21_Go2W_ROS2接入与训练操作.md",
+    "old_is_compatibility_symlink": true,
+    "original_sha256": "c7a23862aa2635f71bd0415fd9b76ba3c8f68ee69fca2fd949406601ee6af313"
+  },
+  {
+    "old": "docs/Go2W_ROS2训练验收.md",
+    "canonical": "docs/30_Go2W_ROS2与训练历史验收.md",
+    "old_is_compatibility_symlink": true,
+    "original_sha256": "5efc7088d96d225cfdc38c11e896302bbb4e34c02156ba6845a368bb34cfd8d0"
+  },
+  {
+    "old": "docs/Go2W轮腿分项评估.md",
+    "canonical": "docs/31_Go2W轮腿分项评估_历史.md",
+    "old_is_compatibility_symlink": true,
+    "original_sha256": "0fe2e2a765c593fcb634dfdd6cf4ab6312d4eeaa59548d351d5b931cc121811e"
+  },
+  {
+    "old": "docs/Go2W鲁棒训练与模式切换.md",
+    "canonical": "docs/32_Go2W鲁棒训练与模式切换验收.md",
+    "old_is_compatibility_symlink": true,
+    "original_sha256": "28ad0b0e02535bb16e955fcf311dc4d77ee3c02ea63cd105e7b41a4a59260845"
+  }
+]

@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "status": "parameterized development assumptions, not purchase or calibrated hardware specifications",
+  "workload": {
+    "scene": "civilian indoor inspection",
+    "object_range_m": [
+      1,
+      5
+    ],
+    "confirmed_by_user": false
+  },
+  "stereo": {
+    "width": 640,
+    "height": 480,
+    "frequency_hz": 10,
+    "horizontal_fov_deg": 80,
+    "baseline_m": 0.1,
+    "pitch_down_deg": 5,
+    "left_translation_base_m": [
+      0.32,
+      0,
+      0.08
+    ],
+    "right_translation_base_m": [
+      0.32,
+      -0.1,
+      0.08
+    ],
+    "optical_axes": "x right, y down, z forward",
+    "model": "ideal pinhole, two RGB render streams; NOT stereo matched depth",
+    "public_rgb": "left, same viewpoint as stage0",
+    "shutter": "instantaneous ideal simulation; not a rolling shutter hardware model"
+  },
+  "lidar": {
+    "profile": "configs/sensors/generic_rotary_64.json",
+    "model": "RTX rotary idealized, uniform elevation; not exact hardware beam calibration",
+    "lines": 64,
+    "columns_per_revolution": 512,
+    "rotation_hz": 10,
+    "vertical_fov_deg": 90,
+    "horizontal_fov_deg": 360,
+    "range_m": [
+      0.5,
+      20.0
+    ],
+    "returns": 1,
+    "translation_base_m": [
+      0,
+      0,
+      0.2
+    ],
+    "point_time_requirement": "use annotator timestamps; do not fabricate common timestamps",
+    "installed_template": "/home/joy/robotics/isaac-env/lib/python3.12/site-packages/isaacsim/extsDeprecated/isaacsim.sensors.rtx/data/lidar_configs/Ouster/OS0/OS0_REV7_128ch10hz512res.json",
+    "template_sha256": "dff34851b77bc1591e7001dfbf8e852b7783507786a08a3d0547e675d0fc9d8a",
+    "hardware_mapping": "OS0 REV8 FOV class only; local branded profiles are REV6/REV7, not a verified REV8 twin"
+  },
+  "imu": {
+    "model": "Isaac physics IMUSensor, ideal; noise not calibrated",
+    "frequency_hz": 120,
+    "translation_base_m": [
+      0,
+      0,
+      0.2
+    ],
+    "physical_preferred_source": "Ouster REV8 embedded IAM-20685HP gyro+accelerometer; hardware rate differs, obtain calibration/firmware first"
+  },
+  "fair_comparison": {
+    "A": [
+      "public RGB",
+      "lidar"
+    ],
+    "B": [
+      "same public RGB",
+      "lidar",
+      "left/right matched depth"
+    ],
+    "fixed": [
+      "localization",
+      "navigation",
+      "semantic model",
+      "scene",
+      "QoS",
+      "control"
+    ],
+    "evaluation_only": [
+      "geometric depth",
+      "ground truth pose",
+      "semantic labels"
+    ],
+    "no_depth_algorithm_enabled": true
+  }
+}

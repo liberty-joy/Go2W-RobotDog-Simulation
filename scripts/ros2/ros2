@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -e
+source "$(dirname -- "${BASH_SOURCE[0]}")/env.sh"
+if [[ "${ROBOTDOG_ROS_RUNTIME:-auto}" != bundled && -f /opt/ros/jazzy/bin/ros2 ]]; then
+  exec /opt/ros/jazzy/bin/ros2 "$@"
+fi
+exec /home/joy/robotics/isaac-env/bin/python -c 'from ros2cli.cli import main; main()' "$@"

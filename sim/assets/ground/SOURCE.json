@@ -1,0 +1,8 @@
+{
+  "source": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.2/Isaac/IsaacLab/Environments/Grid/default_ground_plane_checker_v1/",
+  "sha256": {
+    "default_ground_plane.usda": "8d86d2473acd68f6e4f3763c52347eee283b521303c56d29b8bd733c72811636",
+    "Materials/Textures/default_ground_plane_albedo.png": "77e892ff1af1b2495b85d62b4db2666fc3f890db0810a528b4f5deb789cc8d33",
+    "Materials/Textures/default_ground_plane_roughness.png": "05174665e989af098f6e0a3d38ebfe09d3e8ce71a7bc2c3e65bbebe74b113a27"
+  }
+}

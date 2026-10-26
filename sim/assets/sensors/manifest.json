@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "generated_for_run": "stage2_20261026T172917",
+  "files": {
+    "sim/assets/sensors/vendor/nvidia_isaac_6_2/Orbbec/Gemini335L/orbbec_gemini_335L.usd": {
+      "bytes": 50671410,
+      "sha256": "0ca83218cb634694cca011be6f01674f20d39c17704d119259c7dd0c7b9f59da"
+    },
+    "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0.usd": {
+      "bytes": 16032,
+      "sha256": "b11a455cd354e50d0c4370536f7c67a093fd0fdca3b0e6add457e887a6cfe626"
+    },
+    "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0_REV6_128ch10hz1024res.usda": {
+      "bytes": 14903,
+      "sha256": "98854b516f8672da65a6a3d91099cd6f19710578551764d4a2fd831872267945"
+    },
+    "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0_REV6_128ch10hz2048res.usda": {
+      "bytes": 14888,
+      "sha256": "a4c01a4711811647cf8456f29d3a36992677846adaa3fe75e72c4f6e0cdbfa54"
+    },
+    "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0_REV6_128ch10hz512res.usda": {
+      "bytes": 14964,
+      "sha256": "6c4e75a9d9d5f3f08fa1c1a014b9a01922aa2b92ca097f8f84b6de5e354d6469"
+    },
+    "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0_REV6_128ch20hz1024res.usda": {
+      "bytes": 14888,
+      "sha256": "969e819c3cfe6cc69318d3c8e2574a9c85698fdea46d0c734c042c506cb0c0ea"
+    },
+    "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0_REV6_128ch20hz512res.usda": {
+      "bytes": 14898,
+      "sha256": "0cf6cb5e9343c1e0b76cfddb5c45e67d072f3184a88a550ef167916c52e3a05c"
+    },
+    "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0_REV7_128ch10hz1024res.usda": {
+      "bytes": 14904,
+      "sha256": "614647d228b6bc637be2674953b0f8cd6bf2f10bcb0556656066b2a5fd1dfe5f"
+    },
+    "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0_REV7_128ch10hz2048res.usda": {
+      "bytes": 14889,
+      "sha256": "3947804b75d07fac7d7c8c784d77069204f9f9cffac4aa8bfdaab31293eb9419"
+    },
+    "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0_REV7_128ch10hz512res.usda": {
+      "bytes": 14965,
+      "sha256": "418f1ce8426ea7d92324cade93275157b78eec7c371c9073a119747ec023eedf"
+    },
+    "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0_REV7_128ch20hz1024res.usda": {
+      "bytes": 14889,
+      "sha256": "344506e755594e3ec631919224aa6b01a76029e038a0bc76acc23024a2320135"
+    },
+    "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0_REV7_128ch20hz512res.usda": {
+      "bytes": 14899,
+      "sha256": "51efcbe1ba719fd01b3e954a1339eddca12a25bf1752668df5d329ab13916ef8"
+    },
+    "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/meshes/os0_mesh.usd": {
+      "bytes": 240923,
+      "sha256": "36339a2ea7a8d9784755151def305757498f0f41b98188a505172e0ce6784432"
+    },
+    "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/meshes/textures/sensor_color.png": {
+      "bytes": 9461,
+      "sha256": "fd31f81cea80192ae0a0ac5401d58b602384246c0772112547ee67e7efd560f7"
+    },
+    "sim/assets/sensors/assemblies/go2w_sensor_rig.usda": {
+      "bytes": 3910,
+      "sha256": "7efb2d9b737b010531c1f67065e75270e44a68cfcbbd48cf619e63129a3f32dc"
+    },
+    "configs/sensors/stage2_rig.json": {
+      "bytes": 2060,
+      "sha256": "2f6f65871ac4f82636731dcdad71b1042b889a1dab308ab856bc489abc9ee3a1"
+    },
+    "configs/sensors/generic_rotary_64.json": {
+      "bytes": 4942,
+      "sha256": "2fe92d988230ce9c2a210e702add9a4663fa5faddf7feb38bfe16a45594178d0"
+    }
+  },
+  "relative_references": {
+    "sim/assets/sensors/assemblies/go2w_sensor_rig.usda": [
+      "../vendor/nvidia_isaac_6_2/Orbbec/Gemini335L/orbbec_gemini_335L.usd",
+      "../vendor/nvidia_isaac_6_2/Ouster/OS0/OS0.usd"
+    ],
+    "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0.usd": [
+      "../meshes/os0_mesh.usd",
+      "OS0_REV6_128ch10hz1024res.usda",
+      "OS0_REV6_128ch10hz2048res.usda",
+      "OS0_REV6_128ch10hz512res.usda",
+      "OS0_REV6_128ch20hz1024res.usda",
+      "OS0_REV6_128ch20hz512res.usda",
+      "OS0_REV7_128ch10hz1024res.usda",
+      "OS0_REV7_128ch10hz2048res.usda",
+      "OS0_REV7_128ch10hz512res.usda",
+      "OS0_REV7_128ch20hz1024res.usda",
+      "OS0_REV7_128ch20hz512res.usda"
+    ],
+    "sim/assets/sensors/vendor/nvidia_isaac_6_2/Orbbec/Gemini335L/orbbec_gemini_335L.usd": []
+  },
+  "http_headers_observed": {
+    "access_date": "2026-10-26",
+    "common_last_modified": "Wed, 07 Oct 2026 01:11:50-54 GMT for the five probed objects",
+    "probed": {
+      "sim/assets/sensors/vendor/nvidia_isaac_6_2/Orbbec/Gemini335L/orbbec_gemini_335L.usd": {
+        "content_length": 50671410,
+        "etag": "69a92c31c42f466a4a6cdf92a9b2bf56-7"
+      },
+      "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0.usd": {
+        "content_length": 16032,
+        "etag": "d5bc3a14e75cc4baab084f6d6e4ef452"
+      },
+      "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/meshes/os0_mesh.usd": {
+        "content_length": 240923,
+        "etag": "75dec7a3250a0767b89be9734284aa0c"
+      },
+      "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/OS0/OS0_REV7_128ch10hz512res.usda": {
+        "content_length": 14965,
+        "etag": "934eedcd3ccecf5b80752a172f7be09d"
+      },
+      "sim/assets/sensors/vendor/nvidia_isaac_6_2/Ouster/meshes/textures/sensor_color.png": {
+        "content_length": 9461,
+        "etag": "6b2b5bc2b69388035fe9b82b155dc75a"
+      }
+    }
+  },
+  "remote_dependencies_expected": []
+}

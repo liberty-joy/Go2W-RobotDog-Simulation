@@ -1,0 +1,792 @@
+{
+  "schema_version": 1,
+  "access_date": "2026-10-26",
+  "run": "/home/joy/桌面/RobotDog/outputs/sensor_pipeline/stage1_20261026T154717",
+  "stage0_run": "stage0_20261026T151923",
+  "purpose": "simulation and offline civilian inspection only",
+  "assumptions": {
+    "indoor": true,
+    "object_range_m": [
+      1,
+      5
+    ],
+    "user_confirmed": false
+  },
+  "decision": {
+    "purchase_authorized": false,
+    "hardware_research_preferred": [
+      "Gemini 335L",
+      "OS0 REV8 64ch",
+      "Ouster embedded IAM-20685HP IMU"
+    ],
+    "cost_oriented_quote_pending": [
+      "Gemini 335",
+      "same parameterized lidar or borrowed existing hardware"
+    ],
+    "color_stereo_alternative": "ZED 2i wide 2.1mm",
+    "simulation_config": "configs/sensors/stage1_sim.json",
+    "not_hardware_twin": true,
+    "no_training": true,
+    "SDKs_installed": []
+  },
+  "cameras": [
+    {
+      "vendor": "Orbbec",
+      "model": "Gemini 335",
+      "confirmed": {
+        "architecture": "IR stereo + separate RGB",
+        "shutter": "IR global; RGB rolling",
+        "baseline_mm": 50,
+        "depth_fov_deg": [
+          90,
+          65
+        ],
+        "IR_depth_mode": [
+          1280,
+          800,
+          30
+        ],
+        "RGB_mode": [
+          1920,
+          1080,
+          30
+        ],
+        "ideal_depth_range_m": [
+          0.3,
+          3
+        ],
+        "raw_stereo": "left_ir/right_ir available, not guaranteed unprocessed Bayer",
+        "calibration_api": "getIntrinsic/getDistortion/getExtrinsicTo; save matching stream profiles",
+        "sync": "hardware timestamps/frame sync/multicamera sync; time_domain configurable",
+        "imu": "6DoF gyro+accel 50-1000Hz",
+        "interface": "USB3/USB2 Type-C data+power",
+        "mass_g": 97,
+        "average_power_below_W": 3,
+        "peak_power_below_W": 6.5,
+        "ROS2": "Jazzy official wrapper",
+        "GPU": "no NVIDIA GPU required for streaming/onboard depth",
+        "SDK_license": "MIT source + third party + restricted extension binary license; EULA not accepted"
+      },
+      "unknown": [
+        "actual firmware full simultaneous IR-L/IR-R/RGB bandwidth",
+        "exposure timestamp semantics and lidar synchronization",
+        "IsaacSim6.2 model-specific official measurement extension",
+        "real 5m texture/material error",
+        "authorized price"
+      ],
+      "sources": [
+        "orbbec_datasheet",
+        "335"
+      ],
+      "price": {
+        "status": "inquiry",
+        "amount": null
+      }
+    },
+    {
+      "vendor": "Orbbec",
+      "model": "Gemini 335L",
+      "confirmed": {
+        "architecture": "IR stereo + separate RGB",
+        "shutter": "IR and RGB global",
+        "baseline_mm": 95,
+        "depth_fov_deg": [
+          90,
+          65
+        ],
+        "IR_depth_mode": [
+          1280,
+          800,
+          30
+        ],
+        "RGB_mode": [
+          1280,
+          800,
+          30
+        ],
+        "ideal_depth_range_m": [
+          0.25,
+          6
+        ],
+        "raw_stereo": "left_ir/right_ir available, not guaranteed unprocessed Bayer",
+        "calibration_api": "getIntrinsic/getDistortion/getExtrinsicTo; save matching stream profiles",
+        "sync": "hardware timestamps/frame sync/multicamera sync; time_domain configurable",
+        "imu": "6DoF gyro+accel 50-1000Hz",
+        "interface": "USB3/USB2 Type-C data+power",
+        "mass_g": 133,
+        "average_power_below_W": 3,
+        "peak_power_below_W": 6,
+        "ROS2": "Jazzy official wrapper",
+        "GPU": "no NVIDIA GPU required for streaming/onboard depth",
+        "SDK_license": "MIT source + third party + restricted extension binary license; EULA not accepted"
+      },
+      "unknown": [
+        "actual firmware full simultaneous IR-L/IR-R/RGB bandwidth",
+        "exposure timestamp semantics and lidar synchronization",
+        "IsaacSim6.2 model-specific official measurement extension",
+        "real 5m texture/material error",
+        "authorized price"
+      ],
+      "sources": [
+        "orbbec_datasheet",
+        "335L"
+      ],
+      "price": {
+        "status": "inquiry",
+        "amount": null
+      }
+    },
+    {
+      "vendor": "Stereolabs",
+      "model": "ZED 2i 2.1mm no polarizer",
+      "reference": "ZED-221110",
+      "confirmed": {
+        "architecture": "color stereo",
+        "shutter": "electronically synchronized rolling",
+        "baseline_mm": 120,
+        "fov_HVD_deg": [
+          110,
+          70,
+          120
+        ],
+        "per_eye_modes": [
+          [
+            2208,
+            1242,
+            [
+              15
+            ]
+          ],
+          [
+            1920,
+            1080,
+            [
+              15,
+              30
+            ]
+          ],
+          [
+            1280,
+            720,
+            [
+              15,
+              30,
+              60
+            ]
+          ],
+          [
+            672,
+            376,
+            [
+              15,
+              30,
+              60,
+              100
+            ]
+          ]
+        ],
+        "range_m": [
+          0.3,
+          20
+        ],
+        "ideal_range_m": [
+          0.3,
+          12
+        ],
+        "raw_stereo": "LEFT_UNRECTIFIED/RIGHT_UNRECTIFIED plus raw intrinsics/extrinsics",
+        "external_trigger": false,
+        "internal_stereo_sync": true,
+        "interface": "USB3 Type-C 5V USB",
+        "typical_power_W": 1.9,
+        "mass_g": 229,
+        "linux": "Ubuntu24/22 SDK5.5",
+        "GPU": "NVIDIA CUDA capability>=7.5 current SDK docs",
+        "SDK_license": "proprietary, not accepted",
+        "ROS2_license": "Apache-2.0",
+        "Isaac_extension": "MIT, declared Isaac6.0/6.1, SDK>=5.5"
+      },
+      "unknown": [
+        "Isaac6.2 extension runtime compatibility",
+        "cross-device exposure synchronization",
+        "authorized price"
+      ],
+      "sources": [
+        "zed_specs",
+        "zed_calibration",
+        "zed_linux"
+      ],
+      "price": {
+        "status": "inquiry",
+        "amount": null
+      }
+    }
+  ],
+  "lidars": [
+    {
+      "vendor": "Ouster",
+      "model": "OS0",
+      "revision": "REV8.0",
+      "candidate_channels": 64,
+      "model_number_pattern": "OS0-080-XXX-X-X-002-XX",
+      "confirmed": {
+        "principle": "mechanically rotating CW",
+        "fov_HV_deg": [
+          360,
+          90
+        ],
+        "channel_variants": [
+          32,
+          64,
+          128
+        ],
+        "horizontal_columns": [
+          512,
+          1024,
+          2048,
+          4096
+        ],
+        "mode_hz": {
+          "512": [
+            10,
+            15,
+            20,
+            30,
+            40
+          ],
+          "1024": [
+            10,
+            15,
+            20,
+            30,
+            40
+          ],
+          "2048": [
+            10,
+            20
+          ],
+          "4096": [
+            5,
+            10
+          ]
+        },
+        "min_range_m": {
+          "possible": 0,
+          "optional": 0.3,
+          "default": 0.5
+        },
+        "range_on_10percent_target_m": 35,
+        "range_conditions": "1024x10Hz,100klx,>90% detection",
+        "point_fields": [
+          "range",
+          "reflectivity",
+          "signal",
+          "NIR",
+          "channel",
+          "azimuth",
+          "timestamp",
+          "native RGB REV8"
+        ],
+        "point_time_resolution_us_below": 1,
+        "IMU": "IAM-20685HP gyro+accel 6axis",
+        "IMU_rates_Hz": [
+          640,
+          1280,
+          2560
+        ],
+        "IMU_default_Hz": 2560,
+        "sync": [
+          "IEEE1588 PTP",
+          "gPTP",
+          "PPS/NMEA"
+        ],
+        "interface": "Gigabit Ethernet UDP",
+        "input_V": [
+          9,
+          58
+        ],
+        "nominal_input_V": [
+          12,
+          24
+        ],
+        "power_W": [
+          10,
+          20
+        ],
+        "typical_power_W": 15,
+        "supply_continuous_W_at_least": 30,
+        "mass_g_bare_cap": [
+          500,
+          580
+        ],
+        "driver": "ouster-ros ROS2 Jazzy BSD-3-Clause, point_type native preserves time/ring",
+        "official_sim_assets": "NVIDIA OS0/OS1 REV6/REV7; REV8 exact twin unverified"
+      },
+      "unknown": [
+        "full 64-channel SKU suffix",
+        "factory beam angles and intrinsics",
+        "firmware/revision-specific driver RGB/IMU format support",
+        "mount and electrical budget",
+        "authorized price"
+      ],
+      "sources": [
+        "os0"
+      ],
+      "price": {
+        "status": "inquiry",
+        "amount": null
+      }
+    },
+    {
+      "vendor": "Ouster",
+      "model": "OS1",
+      "revision": "REV8",
+      "candidate_channels": 64,
+      "model_number_pattern": "OS1-080-XXX-X-X-002-XX",
+      "confirmed": {
+        "principle": "mechanically rotating CW",
+        "fov_HV_deg": [
+          360,
+          44
+        ],
+        "channel_variants": [
+          32,
+          64,
+          128
+        ],
+        "horizontal_columns": [
+          512,
+          1024,
+          2048,
+          4096
+        ],
+        "mode_hz": {
+          "512": [
+            10,
+            15,
+            20,
+            30,
+            40
+          ],
+          "1024": [
+            10,
+            15,
+            20,
+            30,
+            40
+          ],
+          "2048": [
+            10,
+            15,
+            20
+          ],
+          "4096": [
+            5,
+            10
+          ]
+        },
+        "min_range_m": {
+          "possible": 0,
+          "optional": 0.3,
+          "default": 0.5
+        },
+        "range_on_10percent_target_m": 90,
+        "range_conditions": "1024x10Hz,100klx,>90% detection",
+        "point_fields": [
+          "range",
+          "reflectivity",
+          "signal",
+          "NIR",
+          "channel",
+          "azimuth",
+          "timestamp",
+          "native RGB REV8"
+        ],
+        "point_time_resolution_us_below": 1,
+        "IMU": "IAM-20685HP gyro+accel 6axis",
+        "IMU_rates_Hz": [
+          640,
+          1280,
+          2560
+        ],
+        "IMU_default_Hz": 2560,
+        "sync": [
+          "IEEE1588 PTP",
+          "gPTP",
+          "PPS/NMEA"
+        ],
+        "interface": "Gigabit Ethernet UDP",
+        "input_V": [
+          9,
+          58
+        ],
+        "nominal_input_V": [
+          12,
+          24
+        ],
+        "power_W": [
+          10,
+          20
+        ],
+        "typical_power_W": 15,
+        "supply_continuous_W_at_least": 30,
+        "mass_g_bare_cap": [
+          500,
+          580
+        ],
+        "driver": "ouster-ros ROS2 Jazzy BSD-3-Clause, point_type native preserves time/ring",
+        "official_sim_assets": "NVIDIA OS0/OS1 REV6/REV7; REV8 exact twin unverified"
+      },
+      "unknown": [
+        "full 64-channel SKU suffix",
+        "factory beam angles and intrinsics",
+        "firmware/revision-specific driver RGB/IMU format support",
+        "mount and electrical budget",
+        "authorized price"
+      ],
+      "sources": [
+        "os1"
+      ],
+      "price": {
+        "status": "inquiry",
+        "amount": null
+      }
+    }
+  ],
+  "sources": {
+    "orbbec_datasheet": {
+      "url": "https://orbbec.com/wp-content/uploads/2024/04/Gemini-330-series-Datasheet-V1.4_20250124.pdf",
+      "access_date": "2026-10-26",
+      "status": "official documentation checked; hardware untested"
+    },
+    "335": {
+      "url": "https://www.orbbec.com/products/stereo-vision-camera/gemini-335/",
+      "access_date": "2026-10-26",
+      "status": "official documentation checked; hardware untested"
+    },
+    "335L": {
+      "url": "https://www.orbbec.com/products/stereo-vision-camera/gemini-335l/",
+      "access_date": "2026-10-26",
+      "status": "official documentation checked; hardware untested"
+    },
+    "zed_specs": {
+      "url": "https://docs.stereolabs.com/docs/products/cameras/zed/specifications",
+      "access_date": "2026-10-26",
+      "status": "official documentation checked; hardware untested"
+    },
+    "zed_calibration": {
+      "url": "https://docs.stereolabs.com/docs/development/zed-sdk/modules/camera/camera-calibration",
+      "access_date": "2026-10-26",
+      "status": "official documentation checked; hardware untested"
+    },
+    "zed_linux": {
+      "url": "https://docs.stereolabs.com/docs/development/zed-sdk/linux",
+      "access_date": "2026-10-26",
+      "status": "official documentation checked; hardware untested"
+    },
+    "os0": {
+      "url": "https://data.ouster.io/downloads/datasheets/datasheet-rev8-v4p0-os0.pdf",
+      "access_date": "2026-10-26",
+      "status": "official documentation checked; hardware untested"
+    },
+    "os1": {
+      "url": "https://data.ouster.io/downloads/datasheets/datasheet-rev8-v4p0-os1.pdf",
+      "access_date": "2026-10-26",
+      "status": "official documentation checked; hardware untested"
+    },
+    "nvidia_assets": {
+      "url": "https://docs.isaacsim.omniverse.nvidia.com/latest/assets/usd_assets_nonvisual_sensors.html",
+      "access_date": "2026-10-26",
+      "status": "official documentation checked; hardware untested"
+    }
+  },
+  "repository_versions": [
+    {
+      "repo": "orbbec/OrbbecSDK_v2",
+      "accessed": "2026-10-26",
+      "url": "https://github.com/orbbec/OrbbecSDK_v2",
+      "default_branch": "main",
+      "commit": "85e94c4ee4032817df2e33228dbd7f51517d3d4e",
+      "license": "NOASSERTION",
+      "latest_release": "v2.10.6",
+      "release_url": "https://github.com/orbbec/OrbbecSDK_v2/releases/tag/v2.10.6"
+    },
+    {
+      "repo": "orbbec/OrbbecSDK_ROS2",
+      "accessed": "2026-10-26",
+      "url": "https://github.com/orbbec/OrbbecSDK_ROS2",
+      "default_branch": "v2-main",
+      "commit": "c153462518ad674650bafa4464fda72c27ab797a",
+      "license": "Apache-2.0",
+      "latest_release": "v2.10.6",
+      "release_url": "https://github.com/orbbec/OrbbecSDK_ROS2/releases/tag/v2.10.6"
+    },
+    {
+      "repo": "stereolabs/zed-ros2-wrapper",
+      "accessed": "2026-10-26",
+      "url": "https://github.com/stereolabs/zed-ros2-wrapper",
+      "default_branch": "master",
+      "commit": "b19902daf0136b6e841b5e415c2d01f425411c45",
+      "license": "Apache-2.0",
+      "latest_release": "v5.5.0",
+      "release_url": "https://github.com/stereolabs/zed-ros2-wrapper/releases/tag/v5.5.0"
+    },
+    {
+      "repo": "stereolabs/zed-isaac-sim",
+      "accessed": "2026-10-26",
+      "url": "https://github.com/stereolabs/zed-isaac-sim",
+      "default_branch": "main",
+      "commit": "f9160973f321ec743f626188244cd9702d85bec6",
+      "license": "MIT",
+      "latest_release": "v5.3.0",
+      "release_url": "https://github.com/stereolabs/zed-isaac-sim/releases/tag/v5.3.0"
+    },
+    {
+      "repo": "ouster-lidar/ouster-ros",
+      "accessed": "2026-10-26",
+      "url": "https://github.com/ouster-lidar/ouster-ros",
+      "default_branch": "ros2",
+      "commit": "bbe9a890012226f7d9354250bbe212852b2443f2",
+      "license": "NOASSERTION",
+      "latest_release": "ros2-v0.14.0",
+      "release_url": "https://github.com/ouster-lidar/ouster-ros/releases/tag/ros2-v0.14.0"
+    },
+    {
+      "repo": "ouster-lidar/ouster-sdk",
+      "accessed": "2026-10-26",
+      "url": "https://github.com/ouster-lidar/ouster-sdk",
+      "default_branch": "master",
+      "commit": "46b7bceee7995914e2f3f3facf4d78418335b2d7",
+      "license": "BSD-3-Clause",
+      "latest_release": "v1.0.1",
+      "release_url": "https://github.com/ouster-lidar/ouster-sdk/releases/tag/v1.0.1"
+    }
+  ],
+  "downloaded_source_files": [
+    {
+      "repo": "orbbec/OrbbecSDK_v2",
+      "selected": [
+        "LICENSE.txt",
+        "extensions/license.txt"
+      ],
+      "ir_calibration_candidates": [
+        "docs/resource/infrared.jpg",
+        "examples/1.stream.infrared/CMakeLists.txt",
+        "examples/1.stream.infrared/README.md",
+        "examples/1.stream.infrared/infrared.cpp",
+        "src/device/IDeviceClockSynchronizer.hpp",
+        "src/device/component/timestamp/DeviceClockSynchronizer.cpp",
+        "src/device/component/timestamp/DeviceClockSynchronizer.hpp"
+      ],
+      "files": [
+        {
+          "path": "LICENSE.txt",
+          "url": "https://raw.githubusercontent.com/orbbec/OrbbecSDK_v2/85e94c4ee4032817df2e33228dbd7f51517d3d4e/LICENSE.txt",
+          "bytes": 35475,
+          "sha256": "010b2381c54551d1928784124282a7ff8cf6786f01846179bde3f810b7cd6b30"
+        },
+        {
+          "path": "extensions/license.txt",
+          "url": "https://raw.githubusercontent.com/orbbec/OrbbecSDK_v2/85e94c4ee4032817df2e33228dbd7f51517d3d4e/extensions/license.txt",
+          "bytes": 1204,
+          "sha256": "e08c9319ca0aba3ae51735afd1ac54a8d44c1f71030ebca2c02ebb2ea4742e02"
+        }
+      ]
+    },
+    {
+      "repo": "orbbec/OrbbecSDK_ROS2",
+      "selected": [
+        "LICENSE",
+        "orbbec_camera/launch/gemini_330_series.launch.py"
+      ],
+      "ir_calibration_candidates": [
+        "orbbec_camera_msgs/srv/GetCameraInfo.srv"
+      ],
+      "files": [
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/orbbec/OrbbecSDK_ROS2/c153462518ad674650bafa4464fda72c27ab797a/LICENSE",
+          "bytes": 11359,
+          "sha256": "1a325fd390b54e7b142d31dfcbfa4ed4621b83d2ec8e3b9fad054d491b3a4c49"
+        },
+        {
+          "path": "orbbec_camera/launch/gemini_330_series.launch.py",
+          "url": "https://raw.githubusercontent.com/orbbec/OrbbecSDK_ROS2/c153462518ad674650bafa4464fda72c27ab797a/orbbec_camera/launch/gemini_330_series.launch.py",
+          "bytes": 25810,
+          "sha256": "b3116cdc03cddb0a39106f918dc1a624b70f14146d6574444d30774b80c79c3f"
+        }
+      ]
+    },
+    {
+      "repo": "stereolabs/zed-ros2-wrapper",
+      "selected": [
+        "LICENSE",
+        "zed_debug/config/common_stereo.yaml",
+        "zed_wrapper/config/common_stereo.yaml"
+      ],
+      "ir_calibration_candidates": [],
+      "files": [
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/stereolabs/zed-ros2-wrapper/b19902daf0136b6e841b5e415c2d01f425411c45/LICENSE",
+          "bytes": 13543,
+          "sha256": "a427e18c20d55e736c7889b3f5e4b3e3babb1b4e5d49ee792e8a1932b9ee31c5"
+        },
+        {
+          "path": "zed_debug/config/common_stereo.yaml",
+          "url": "https://raw.githubusercontent.com/stereolabs/zed-ros2-wrapper/b19902daf0136b6e841b5e415c2d01f425411c45/zed_debug/config/common_stereo.yaml",
+          "bytes": 27987,
+          "sha256": "007ff763a046551d14ecf0548e68450676e808ca09467151a755f167c88ce48b"
+        },
+        {
+          "path": "zed_wrapper/config/common_stereo.yaml",
+          "url": "https://raw.githubusercontent.com/stereolabs/zed-ros2-wrapper/b19902daf0136b6e841b5e415c2d01f425411c45/zed_wrapper/config/common_stereo.yaml",
+          "bytes": 30021,
+          "sha256": "b47da0d904ed35b7696d560ab830da8e9d2d36b30fd4149d26750066f9079d4e"
+        }
+      ]
+    },
+    {
+      "repo": "stereolabs/zed-isaac-sim",
+      "selected": [
+        "LICENSE"
+      ],
+      "ir_calibration_candidates": [
+        "exts/sl.sensor.camera.calibration_exporter/config/extension.toml",
+        "exts/sl.sensor.camera.calibration_exporter/data/icon.png",
+        "exts/sl.sensor.camera.calibration_exporter/docs/CHANGELOG.md",
+        "exts/sl.sensor.camera.calibration_exporter/docs/README.md",
+        "exts/sl.sensor.camera.calibration_exporter/premake5.lua",
+        "exts/sl.sensor.camera.calibration_exporter/sl/sensor/camera/calibration_exporter/README.md",
+        "exts/sl.sensor.camera.calibration_exporter/sl/sensor/camera/calibration_exporter/__init__.py",
+        "exts/sl.sensor.camera.calibration_exporter/sl/sensor/camera/calibration_exporter/calibration.py",
+        "exts/sl.sensor.camera.calibration_exporter/sl/sensor/camera/calibration_exporter/extension.py",
+        "exts/sl.sensor.camera.calibration_exporter/sl/sensor/camera/calibration_exporter/global_variables.py",
+        "exts/sl.sensor.camera.calibration_exporter/sl/sensor/camera/calibration_exporter/tests/__init__.py",
+        "exts/sl.sensor.camera.calibration_exporter/sl/sensor/camera/calibration_exporter/tests/test_calibration.py",
+        "exts/sl.sensor.camera.calibration_exporter/sl/sensor/camera/calibration_exporter/ui_builder.py",
+        "exts/sl.sensor.camera/examples/fusion_calibration/README.md",
+        "exts/sl.sensor.camera/examples/fusion_calibration/pose_to_zed_fusion.py",
+        "imgs/zed_calibration_full.gif"
+      ],
+      "files": [
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/stereolabs/zed-isaac-sim/f9160973f321ec743f626188244cd9702d85bec6/LICENSE",
+          "bytes": 1073,
+          "sha256": "310aac54ef3dab6f184b7e46521e33efb02b81046e85c2a3a273bcd494ee06d3"
+        }
+      ]
+    },
+    {
+      "repo": "ouster-lidar/ouster-ros",
+      "selected": [
+        "LICENSE",
+        "ouster-ros/LICENSE"
+      ],
+      "ir_calibration_candidates": [],
+      "files": [
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/ouster-lidar/ouster-ros/bbe9a890012226f7d9354250bbe212852b2443f2/LICENSE",
+          "bytes": 18,
+          "sha256": "e132bcdd1dbf65dae3bd58c4ca6e5e54440192f8637abdc9fd5896763b99baea"
+        },
+        {
+          "path": "ouster-ros/LICENSE",
+          "url": "https://raw.githubusercontent.com/ouster-lidar/ouster-ros/bbe9a890012226f7d9354250bbe212852b2443f2/ouster-ros/LICENSE",
+          "bytes": 3219,
+          "sha256": "9f2dee30c50786b941b5982e31465c995fd6f2cb111d2f471fe7e2e32ff25dcc"
+        }
+      ]
+    },
+    {
+      "repo": "ouster-lidar/ouster-sdk",
+      "selected": [
+        "LICENSE"
+      ],
+      "ir_calibration_candidates": [
+        "tests/metadata/malformed/legacy_with_calibration_status.json"
+      ],
+      "files": [
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/ouster-lidar/ouster-sdk/46b7bceee7995914e2f3f3facf4d78418335b2d7/LICENSE",
+          "bytes": 1504,
+          "sha256": "a4bbe45cd35bbe91e1f64f47595ce69a99a3ac07bfb590382bde7156c81b0276"
+        }
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/orbbec/OrbbecSDK_v2/85e94c4ee4032817df2e33228dbd7f51517d3d4e/include/libobsensor/hpp/StreamProfile.hpp",
+      "path": "/home/joy/桌面/RobotDog/outputs/sensor_pipeline/stage1_20261026T154717/sources/orbbec_StreamProfile.hpp",
+      "bytes": 21414,
+      "sha256": "e35242a78a04d6535713d00d5ff17d3faf4a7ffe3410c6301145981b9b613c85",
+      "license": "MIT and repository notices"
+    }
+  ],
+  "download_attempts": [
+    {
+      "name": "orbbec_g330_v1p4.pdf",
+      "url": "https://orbbec.com/wp-content/uploads/2024/04/Gemini-330-series-Datasheet-V1.4_20250124.pdf",
+      "accessed": "2026-10-26",
+      "license": "manufacturer documentation; all rights reserved; local reference only",
+      "free_bytes_before": 181776883712,
+      "head_bytes": "2966532",
+      "status": "downloaded",
+      "bytes": 2966532,
+      "sha256": "250dacb1ae573d82ca911c94e87fe84ada45f3487acb6b334d64cef7bd082db3"
+    },
+    {
+      "name": "ouster_os0_rev8_v4p0.pdf",
+      "url": "https://data.ouster.io/downloads/datasheets/datasheet-rev8-v4p0-os0.pdf",
+      "accessed": "2026-10-26",
+      "license": "manufacturer documentation; all rights reserved; local reference only",
+      "free_bytes_before": 181773864960,
+      "head_bytes": "732485",
+      "status": "failed",
+      "error": "HTTP Error 403: Forbidden",
+      "sha256": null,
+      "bytes": null,
+      "web_read_status": "official PDF read via browser tool; native GET403"
+    },
+    {
+      "name": "ouster_os1_rev8_v4p0.pdf",
+      "url": "https://data.ouster.io/downloads/datasheets/datasheet-rev8-v4p0-os1.pdf",
+      "accessed": "2026-10-26",
+      "license": "manufacturer documentation; all rights reserved; local reference only",
+      "free_bytes_before": 181773840384,
+      "head_bytes": "747652",
+      "status": "failed",
+      "error": "HTTP Error 403: Forbidden",
+      "sha256": null,
+      "bytes": null,
+      "web_read_status": "official PDF read via browser tool; native GET403"
+    }
+  ],
+  "future_user_inputs": [
+    "existing devices and full revision/firmware/lens",
+    "real indoor ranges/material/lighting/speed",
+    "mount/payload/power/network/USB",
+    "budget and authorized quotes",
+    "trigger/PTP/IMU choices"
+  ],
+  "excluded": {
+    "ToF": "not left/right stereo",
+    "Livox": "nontraditional scan not substituted for mechanical rotation",
+    "ZED2i4.6mm": "1.5m near limit does not cover assumed1m",
+    "branded_extensions": "Isaac6.2 compatibility not verified; generic fallback"
+  },
+  "license_audit": {
+    "orbbec/OrbbecSDK_v2": "GitHub API NOASSERTION; inspected LICENSE.txt has MIT source + third parties; extensions/license.txt restricts binaries",
+    "ouster-lidar/ouster-ros": "GitHub API NOASSERTION; inspected ouster-ros/LICENSE identifies BSD-3-Clause + BSL-1.0 optional-lite"
+  },
+  "simulation_validation": {
+    "status": "PASS for measurement/API smoke only",
+    "sample": "outputs/sensor_pipeline/stage1_20261026T154717/sensor_smoke_final/smoke.json",
+    "point_count": 12954,
+    "matched_depth": false,
+    "sync_calibration_accepted": false,
+    "ROS_lidar_IMU_accepted": false,
+    "manual_GUI": "NOT_TESTED"
+  }
+}

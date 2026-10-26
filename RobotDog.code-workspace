@@ -1,0 +1,35 @@
+{
+  "folders": [
+    {
+      "name": "RobotDog · 本地开发运行",
+      "path": "."
+    },
+    {
+      "name": "RobotDog · Windows共享交换",
+      "path": "/mnt/Shared/First1/1023Robot_Dog_Development"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/__pycache__": true,
+      "sim/assets/sensors/vendor/**": true,
+      "outputs/**": true
+    },
+    "search.exclude": {
+      "**/data/raw/**": true,
+      "**/models/**": true,
+      "**/ros2_ws/build/**": true,
+      "**/ros2_ws/install/**": true,
+      "**/outputs/**": true,
+      "sim/assets/sensors/vendor/**": true
+    },
+    "git.autofetch": true,
+    "git.autofetchPeriod": 180,
+    "git.confirmSync": false,
+    "git.enableSmartCommit": true,
+    "git.fetchOnPull": true,
+    "git.pruneOnFetch": true,
+    "git.allowForcePush": false,
+    "git.useForcePushWithLease": true
+  }
+}
