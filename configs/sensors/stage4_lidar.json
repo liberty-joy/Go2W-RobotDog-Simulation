@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "status": "Stage 1 generic RTX rotary proxy; not an Ouster hardware twin",
+  "source_profile": "configs/sensors/generic_rotary_64.json",
+  "rig_config": "configs/sensors/stage2_rig.json",
+  "static_target_distances_m": [0.3, 0.5, 1.0, 2.0, 3.0, 5.0],
+  "target_dimensions_m": [0.02, 8.0, 8.0],
+  "capture_full_scans_per_target": 3,
+  "settle_time_s": 0.35,
+  "motion_speed_m_s": 0.08,
+  "motion_duration_s": 2.5,
+  "frame_time_capture_rate_hz": 60,
+  "imu_declared_rate_hz": 120,
+  "description": "Static single-plane targets followed by low-speed wheel-policy motion; ideal noise-free simulation"
+}

@@ -24,10 +24,12 @@ p.add_argument('--sensor-rig-config',type=Path,help='Optional Stage 2 local sens
 p.add_argument('--sensor-rig-output',type=Path,help='New output directory for Stage 2 rig smoke')
 p.add_argument('--stage3-stereo-config',type=Path,help='Optional Stage 3 synchronized stereo dataset smoke configuration')
 p.add_argument('--stage3-stereo-output',type=Path,help='New output directory for Stage 3 stereo captures')
+p.add_argument('--stage4-lidar-config',type=Path,help='Optional Stage 4 static and moving raw lidar capture configuration')
+p.add_argument('--stage4-lidar-output',type=Path,help='New output directory for Stage 4 lidar captures')
 a = p.parse_args()
 from isaacsim import SimulationApp
 app = SimulationApp({'headless': a.headless, 'width': 1280, 'height': 800,
-    'extra_args': ['--/renderer/raytracingMotion/enabled=true'] if (a.sensor_selection or a.sensor_rig_config or a.stage3_stereo_config) else []})
+    'extra_args': ['--/renderer/raytracingMotion/enabled=true'] if (a.sensor_selection or a.sensor_rig_config or a.stage3_stereo_config or a.stage4_lidar_config) else []})
 try:
     import numpy as np
     import carb.input
@@ -148,6 +150,12 @@ try:
         if not a.stage3_stereo_output:raise ValueError('--stage3-stereo-output is required')
         from sensor_pipeline.stage3_stereo_smoke import Stage3StereoSmoke
         stage3_stereo=Stage3StereoSmoke(a.stage3_stereo_config,a.stage3_stereo_output,root,stage,base_path,camera)
+    stage4_lidar=None
+    if a.stage4_lidar_config:
+        if not a.stage4_lidar_output:raise ValueError('--stage4-lidar-output is required')
+        from sensor_pipeline.stage4_lidar_smoke import Stage4LidarSmoke
+        stage4_lidar=Stage4LidarSmoke(a.stage4_lidar_config,a.stage4_lidar_output,root,stage,base_path,camera)
+        stage4_lidar.ros_pointcloud_enabled=bool(a.ros2)
     # initialize() attaches RGB by default.
     faulthandler.cancel_dump_traceback_later()
     set_camera_view(eye=np.array([2,2,1.3]),target=np.array([0,0,0.3]))
@@ -227,6 +235,8 @@ try:
         # Low speed differential steering. All wheel axes are +Y in official URDF.
         v=0.15*(('W' in keys)-('S' in keys)); yaw=0.35*(('A' in keys)-('D' in keys))
         if ros is not None and not (keys & {'W','A','S','D'}):v,yaw=ros.velocity()
+        if stage4_lidar is not None and stage4_lidar.phase == 'motion':
+            v=float(stage4_lidar.config['motion_speed_m_s']);yaw=0.0
         if 'SPACE' in keys:
             v=yaw=0
             if ros is not None:ros.clear_command()
@@ -275,6 +285,22 @@ try:
         if asset_rig_smoke is not None:asset_rig_smoke.update(world.current_time)
         if stage3_stereo is not None:stage3_stereo.update(world.current_time,robot)
         if stage3_stereo is not None and stage3_stereo.done:break
+        if stage4_lidar is not None:
+            stage4_lidar.update(world.current_time,robot)
+            if ros is not None and stage4_lidar.new_ros_scan is not None:
+                scan_meta, scan_arrays = stage4_lidar.new_ros_scan
+                msg=ros.publish_lidar_points(scan_arrays['data'],scan_arrays['timestamp'],scan_arrays['emitterId'],
+                    scan_meta['simulation_time_s'],scan_meta['sensor_position_world_m'],scan_meta['sensor_orientation_world_wxyz'],
+                    scan_meta['base_position_world_m'],scan_meta['base_orientation_world_wxyz'])
+                if msg is not None:
+                    stage4_lidar.ros_pointcloud_published += 1
+                    if not stage4_lidar.pc2_sample_saved:
+                        stage4_lidar.record_pointcloud2_message(msg)
+                        stage4_lidar.pc2_sample_saved=True
+                stage4_lidar.new_ros_scan=None
+            if stage4_lidar.done:
+                stage4_lidar.finalize_ros_summary()
+                break
         if ros is not None:
             if world.current_time+1e-6>=next_ros_time:
                 with_image=world.current_time+1e-6>=next_image_time
@@ -321,6 +347,7 @@ try:
     if selection_smoke is not None:selection_smoke.finish()
     if asset_rig_smoke is not None:asset_rig_smoke.finish()
     if stage3_stereo is not None:stage3_stereo.finish()
+    if stage4_lidar is not None:stage4_lidar.finish()
     if ros is not None:ros.close()
     if subscription is not None:interface.unsubscribe_to_keyboard_events(keyboard,subscription)
     print('GO2W_SIMULATION_COMPLETE',{'steps_in_last_cycle':steps,'mode':control_mode},flush=True)

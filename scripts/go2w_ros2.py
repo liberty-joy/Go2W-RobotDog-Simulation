@@ -8,7 +8,7 @@ from rclpy.qos import qos_profile_sensor_data, QoSProfile, DurabilityPolicy
 from builtin_interfaces.msg import Time
 from geometry_msgs.msg import Twist, TransformStamped
 from nav_msgs.msg import Odometry
-from sensor_msgs.msg import JointState, Image, CameraInfo
+from sensor_msgs.msg import JointState, Image, CameraInfo, PointCloud2, PointField
 from rosgraph_msgs.msg import Clock
 from tf2_msgs.msg import TFMessage
 from std_msgs.msg import String
@@ -44,6 +44,7 @@ class Go2WRos2:
         self.image = self.node.create_publisher(Image, '/go2w/front_camera/image_raw', image_qos)
         self.info = self.node.create_publisher(CameraInfo, '/go2w/front_camera/camera_info', qos_profile_sensor_data)
         self.tf = self.node.create_publisher(TFMessage, '/tf', 10)
+        self.lidar_points = self.node.create_publisher(PointCloud2, '/go2w/lidar/points', qos_profile_sensor_data)
         self.static = self.node.create_publisher(TFMessage, '/tf_static', QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL))
         self.publish_static()
         print('ROS2_READY /go2w/cmd_vel -> simulation; watchdog=0.5s', flush=True)
@@ -128,6 +129,58 @@ class Go2WRos2:
         info.r = [1., 0., 0., 0., 1., 0., 0., 0., 1.]
         info.p = [fx, 0., cx, 0., 0., fy, cy, 0., 0., 0., 1., 0.]
         self.info.publish(info)
+
+    def publish_lidar_points(self, xyz, timestamps_ns, emitter_ids, sim_time,
+                             sensor_position_world, sensor_orientation_world,
+                             base_position_world, base_orientation_world):
+        """Publish only verified raw fields; no intensity or channel/ring is synthesized."""
+        points = np.asarray(xyz, dtype=np.float32)
+        point_time = np.asarray(timestamps_ns, dtype=np.uint64)
+        emitter = np.asarray(emitter_ids, dtype=np.uint32)
+        if points.ndim != 2 or points.shape[1] != 3 or len(points) != len(point_time) or len(points) != len(emitter):
+            raise ValueError('RTX lidar xyz/timestamp/emitterId arrays must have matching point counts')
+        valid = np.isfinite(points).all(axis=1) & (np.linalg.norm(points, axis=1) > 1e-6)
+        points, point_time, emitter = points[valid], point_time[valid], emitter[valid]
+        if not len(points):
+            return None
+        dtype = np.dtype({'names': ['x', 'y', 'z', 'time_from_scan_start', 'emitter_id'],
+                          'formats': ['<f4', '<f4', '<f4', '<f8', '<u4'],
+                          'offsets': [0, 4, 8, 12, 20], 'itemsize': 24})
+        records = np.empty(len(points), dtype=dtype)
+        records['x'], records['y'], records['z'] = points.T
+        records['time_from_scan_start'] = (point_time.astype(np.float64) - float(point_time.min())) * 1e-9
+        records['emitter_id'] = emitter
+        msg = PointCloud2()
+        msg.header.stamp = stamp(sim_time)
+        msg.header.frame_id = 'go2w_lidar'
+        msg.height, msg.width = 1, int(len(records))
+        msg.fields = [
+            PointField(name='x', offset=0, datatype=PointField.FLOAT32, count=1),
+            PointField(name='y', offset=4, datatype=PointField.FLOAT32, count=1),
+            PointField(name='z', offset=8, datatype=PointField.FLOAT32, count=1),
+            PointField(name='time_from_scan_start', offset=12, datatype=PointField.FLOAT64, count=1),
+            PointField(name='emitter_id', offset=20, datatype=PointField.UINT32, count=1),
+        ]
+        msg.is_bigendian = False
+        msg.point_step, msg.row_step = 24, 24 * len(records)
+        msg.data = records.tobytes()
+        msg.is_dense = True
+        self.lidar_points.publish(msg)
+
+        # Publish the sensor's measured run-time mount relative to base_link.
+        base_q = np.asarray(base_orientation_world, dtype=float)
+        sensor_q = np.asarray(sensor_orientation_world, dtype=float)
+        bw, bx, by, bz = base_q / np.linalg.norm(base_q)
+        inverse_base = np.array([bw, -bx, -by, -bz])
+        sw, sx, sy, sz = sensor_q / np.linalg.norm(sensor_q)
+        iw, ix, iy, iz = inverse_base
+        relative_q = np.array([iw*sw-ix*sx-iy*sy-iz*sz,
+                               iw*sx+ix*sw+iy*sz-iz*sy,
+                               iw*sy-ix*sz+iy*sw+iz*sx,
+                               iw*sz+ix*sy-iy*sx+iz*sw])
+        relative_p = rotate_inverse(base_q, np.asarray(sensor_position_world, dtype=float) - np.asarray(base_position_world, dtype=float))
+        self.tf.publish(TFMessage(transforms=[self.transform('base_link', 'go2w_lidar', relative_p, relative_q, msg.header.stamp)]))
+        return msg
 
     def close(self):
         self.node.destroy_node()
