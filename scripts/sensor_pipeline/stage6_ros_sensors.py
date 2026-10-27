@@ -108,9 +108,11 @@ class Stage6RosSensors(Stage5FusionCapture):
             arrays,frame,scan=item
             ps,qs=self.lidar.get_world_pose();pb,qb=robot.get_world_pose()
             end_s=float(np.max(arrays['timestamp']))*1e-9
+            self.latest_lidar_scan_end_ns=int(np.max(arrays['timestamp']))
             msg=ros.publish_lidar_points(arrays['data'],arrays['timestamp'],arrays['emitterId'],end_s,
                                         ps,qs,pb,qb,exact_time_fields=True,publish_tf=False)
             if msg is not None:self._count('/go2w/lidar/points')
+        if hasattr(self,'image_publish_ready') and not self.image_publish_ready(t):return
         cameras=[('public',self.public),('left',self.left),('right',self.right)]
         times=[cam.get_current_frame().get('rendering_time') for name,cam in cameras]
         if any(x is None for x in times):return

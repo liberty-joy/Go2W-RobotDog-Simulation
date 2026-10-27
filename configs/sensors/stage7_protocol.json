@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "status": "frozen after rule-only/navigation and developer vision smoke; before heldout task capture",
+  "groups": [
+    {
+      "sensor_mode": "A",
+      "planner": "direct"
+    },
+    {
+      "sensor_mode": "A",
+      "planner": "evidence"
+    },
+    {
+      "sensor_mode": "B",
+      "planner": "direct"
+    },
+    {
+      "sensor_mode": "B",
+      "planner": "evidence"
+    }
+  ],
+  "conditions": [
+    {
+      "condition": "normal",
+      "scene_id": "stage7_test_normal",
+      "object_id": "equipment_red_01",
+      "seed": 72011,
+      "center_world_m": [
+        2.45,
+        0.0,
+        0.6
+      ],
+      "texture": "random",
+      "delay_s": 0.0
+    },
+    {
+      "condition": "stale_evidence",
+      "scene_id": "stage7_test_stale",
+      "object_id": "equipment_red_01",
+      "seed": 72037,
+      "center_world_m": [
+        2.45,
+        0.0,
+        0.6
+      ],
+      "texture": "random",
+      "delay_s": 1.4
+    },
+    {
+      "condition": "repetitive",
+      "scene_id": "stage7_test_repetitive",
+      "object_id": "equipment_red_01",
+      "seed": 72057,
+      "center_world_m": [
+        2.9,
+        0.0,
+        0.65
+      ],
+      "texture": "repetitive",
+      "delay_s": 0.0
+    }
+  ],
+  "trials_per_cell_per_condition": 1,
+  "scope": "12 engineering smoke trials, not statistically powered task benchmark",
+  "fixed": {
+    "localizer": "known-map lidar ICP, no truth corrections",
+    "controller": "existing Go2W velocity control and watchdog",
+    "vision": "torchvision0.26 SqueezeNet1_1_IMAGENET1K_V1 CPU; features only",
+    "common_rgb": "unchanged central camera",
+    "geometry": "Stage3 SGBM + Stage5 association/conflict gates",
+    "appearance_cosine_min": 0.65,
+    "max_observations": 3,
+    "task_timeout_s": 35.0,
+    "initial_pose_estimate": [
+      0.06,
+      -0.04,
+      0.025
+    ]
+  },
+  "execution_validation": "both planners always constrained by same deterministic object/existence/age/reachability/cancel validator",
+  "planner_difference": "direct attempts current proposal once; evidence planner proactively requests bounded fresh observations if evidence fails gates",
+  "delayed_case": "explicit artificial 1.4s delay stress-tests evidence age; not natural task distribution",
+  "observations": "initial + arrival confirmation nominal 2; extra=max(0,total-2); each sensor/planner group has same maximum budget",
+  "no_test_tuning": true,
+  "independent_simulation_for_every_cell": true,
+  "statistical_scope": "fixed engineering regression after infrastructure debugging; not blind heldout inference",
+  "no_parameter_tuning_on_tasks": true
+}

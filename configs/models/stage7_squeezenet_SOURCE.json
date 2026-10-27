@@ -1,0 +1,28 @@
+{
+  "accessed": "2026-10-27T17:55:57.520401+08:00",
+  "preflight": {
+    "url": "https://download.pytorch.org/models/squeezenet1_1-b8a52dc0.pth",
+    "http_status": 200,
+    "content_length": "4958839",
+    "exact_release": "torchvision 0.26.0 SqueezeNet1_1_Weights.IMAGENET1K_V1",
+    "license_url": "https://raw.githubusercontent.com/pytorch/vision/v0.26.0/LICENSE",
+    "model_docs": "https://docs.pytorch.org/vision/0.26/models/generated/torchvision.models.squeezenet1_1.html",
+    "expected_sha256_prefix": "b8a52dc0",
+    "device": "CPU float32, 4 threads; no added GPU model memory",
+    "RAM_budget_MiB": 700,
+    "free_disk_bytes": 176621342720,
+    "purpose": "generic ImageNet features/classification; manual equipment registry remains identity source; no equipment classifier accuracy claimed"
+  },
+  "files": [
+    {
+      "path": "squeezenet1_1-b8a52dc0.pth",
+      "url": "https://download.pytorch.org/models/squeezenet1_1-b8a52dc0.pth",
+      "bytes": 4958839,
+      "sha256": "b8a52dc049b60e4b6ab68ad0df457362afab8b6304b2febdc1650a5dab4d7e7b",
+      "license": "BSD-3-Clause torchvision code; ImageNet-trained weights use/data provenance subject to source dataset terms; no real-person recognition"
+    }
+  ],
+  "license_url": "https://raw.githubusercontent.com/pytorch/vision/v0.26.0/LICENSE",
+  "source_release": "v0.26.0",
+  "training": "none"
+}
