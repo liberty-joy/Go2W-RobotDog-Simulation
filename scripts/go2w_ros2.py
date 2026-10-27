@@ -8,7 +8,7 @@ from rclpy.qos import qos_profile_sensor_data, QoSProfile, DurabilityPolicy
 from builtin_interfaces.msg import Time
 from geometry_msgs.msg import Twist, TransformStamped
 from nav_msgs.msg import Odometry
-from sensor_msgs.msg import JointState, Image, CameraInfo, PointCloud2, PointField
+from sensor_msgs.msg import JointState, Image, CameraInfo, PointCloud2, PointField, Imu
 from rosgraph_msgs.msg import Clock
 from tf2_msgs.msg import TFMessage
 from std_msgs.msg import String
@@ -26,27 +26,30 @@ def stamp(seconds):
 
 
 class Go2WRos2:
-    def __init__(self, robot, camera, image_reliable=False):
+    def __init__(self, robot, camera, image_reliable=False, evaluation_only_odometry=False):
         rclpy.init()
         self.node = Node('go2w_sim')
         self.robot, self.camera = robot, camera
         self.command = (0., 0.)
         self.mode_request=None
         self.control_mode='wheel'
+        self.evaluation_only_odometry = evaluation_only_odometry
         self.node.create_subscription(String,'/go2w/control_mode/cmd',self.on_mode,10)
         self.mode_pub=self.node.create_publisher(String,'/go2w/control_mode',10)
         self.received = -math.inf
         self.node.create_subscription(Twist, '/go2w/cmd_vel', self.on_command, 10)
         self.clock = self.node.create_publisher(Clock, '/clock', 10)
-        self.odom = self.node.create_publisher(Odometry, '/go2w/odom', 10)
+        self.odom = self.node.create_publisher(Odometry, '/evaluation/go2w/odom' if evaluation_only_odometry else '/go2w/odom', 10)
         self.joints = self.node.create_publisher(JointState, '/go2w/joint_states', qos_profile_sensor_data)
-        image_qos=QoSProfile(depth=5) if image_reliable else qos_profile_sensor_data
+        image_qos=QoSProfile(depth=20) if evaluation_only_odometry else (QoSProfile(depth=5) if image_reliable else qos_profile_sensor_data)
         self.image = self.node.create_publisher(Image, '/go2w/front_camera/image_raw', image_qos)
-        self.info = self.node.create_publisher(CameraInfo, '/go2w/front_camera/camera_info', qos_profile_sensor_data)
+        self.info = self.node.create_publisher(CameraInfo, '/go2w/front_camera/camera_info', image_qos)
         self.tf = self.node.create_publisher(TFMessage, '/tf', 10)
-        self.lidar_points = self.node.create_publisher(PointCloud2, '/go2w/lidar/points', qos_profile_sensor_data)
+        self.eval_tf = self.node.create_publisher(TFMessage, '/evaluation/tf', 10) if evaluation_only_odometry else self.tf
+        self.sensor_publishers = {'/go2w/front_camera/image_raw':self.image,'/go2w/front_camera/camera_info':self.info}
+        self.lidar_points = self.node.create_publisher(PointCloud2, '/go2w/lidar/points', QoSProfile(depth=20) if evaluation_only_odometry else qos_profile_sensor_data)
         self.static = self.node.create_publisher(TFMessage, '/tf_static', QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL))
-        self.publish_static()
+        if not evaluation_only_odometry:self.publish_static()
         print('ROS2_READY /go2w/cmd_vel -> simulation; watchdog=0.5s', flush=True)
 
     def on_command(self, msg):
@@ -91,7 +94,8 @@ class Go2WRos2:
         self.mode_pub.publish(String(data=self.control_mode))
         pos, quat = self.robot.get_world_pose()
         msg = Odometry()
-        msg.header.stamp, msg.header.frame_id, msg.child_frame_id = t, 'odom', 'base_link'
+        root_frame = 'simulation_world' if self.evaluation_only_odometry else 'odom'
+        msg.header.stamp, msg.header.frame_id, msg.child_frame_id = t, root_frame, 'base_link'
         msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.position.z = map(float, pos)
         msg.pose.pose.orientation.w, msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, msg.pose.pose.orientation.z = map(float, quat)
         linear = rotate_inverse(quat, np.asarray(self.robot.get_linear_velocity()))
@@ -99,7 +103,7 @@ class Go2WRos2:
         msg.twist.twist.linear.x, msg.twist.twist.linear.y, msg.twist.twist.linear.z = map(float, linear)
         msg.twist.twist.angular.x, msg.twist.twist.angular.y, msg.twist.twist.angular.z = map(float, angular)
         self.odom.publish(msg)  # Simulator ground truth, not a wheel/IMU estimator.
-        self.tf.publish(TFMessage(transforms=[self.transform('odom', 'base_link', pos, quat, t)]))
+        self.eval_tf.publish(TFMessage(transforms=[self.transform(root_frame, 'base_link', pos, quat, t)]))
         joints = JointState()
         joints.header.stamp, joints.header.frame_id = t, 'base_link'
         joints.name = list(self.robot.dof_names)
@@ -132,7 +136,8 @@ class Go2WRos2:
 
     def publish_lidar_points(self, xyz, timestamps_ns, emitter_ids, sim_time,
                              sensor_position_world, sensor_orientation_world,
-                             base_position_world, base_orientation_world):
+                             base_position_world, base_orientation_world,
+                             exact_time_fields=False, publish_tf=True):
         """Publish only verified raw fields; no intensity or channel/ring is synthesized."""
         points = np.asarray(xyz, dtype=np.float32)
         point_time = np.asarray(timestamps_ns, dtype=np.uint64)
@@ -143,13 +148,18 @@ class Go2WRos2:
         points, point_time, emitter = points[valid], point_time[valid], emitter[valid]
         if not len(points):
             return None
-        dtype = np.dtype({'names': ['x', 'y', 'z', 'time_from_scan_start', 'emitter_id'],
-                          'formats': ['<f4', '<f4', '<f4', '<f8', '<u4'],
-                          'offsets': [0, 4, 8, 12, 20], 'itemsize': 24})
+        names = ['x', 'y', 'z', 'time_from_scan_start', 'emitter_id']
+        formats, offsets, itemsize = ['<f4', '<f4', '<f4', '<f8', '<u4'], [0,4,8,12,20], 24
+        if exact_time_fields:
+            names += ['time_sec','time_nanosec']; formats += ['<u4','<u4']; offsets += [24,28]; itemsize = 32
+        dtype = np.dtype({'names': names, 'formats': formats, 'offsets': offsets, 'itemsize': itemsize})
         records = np.empty(len(points), dtype=dtype)
         records['x'], records['y'], records['z'] = points.T
         records['time_from_scan_start'] = (point_time.astype(np.float64) - float(point_time.min())) * 1e-9
         records['emitter_id'] = emitter
+        if exact_time_fields:
+            records['time_sec'] = point_time // 1000000000
+            records['time_nanosec'] = point_time % 1000000000
         msg = PointCloud2()
         msg.header.stamp = stamp(sim_time)
         msg.header.frame_id = 'go2w_lidar'
@@ -161,11 +171,15 @@ class Go2WRos2:
             PointField(name='time_from_scan_start', offset=12, datatype=PointField.FLOAT64, count=1),
             PointField(name='emitter_id', offset=20, datatype=PointField.UINT32, count=1),
         ]
+        if exact_time_fields:
+            msg.fields += [PointField(name='time_sec',offset=24,datatype=PointField.UINT32,count=1),
+                           PointField(name='time_nanosec',offset=28,datatype=PointField.UINT32,count=1)]
         msg.is_bigendian = False
-        msg.point_step, msg.row_step = 24, 24 * len(records)
+        msg.point_step, msg.row_step = itemsize, itemsize * len(records)
         msg.data = records.tobytes()
         msg.is_dense = True
         self.lidar_points.publish(msg)
+        if not publish_tf: return msg
 
         # Publish the sensor's measured run-time mount relative to base_link.
         base_q = np.asarray(base_orientation_world, dtype=float)
@@ -181,6 +195,37 @@ class Go2WRos2:
         relative_p = rotate_inverse(base_q, np.asarray(sensor_position_world, dtype=float) - np.asarray(base_position_world, dtype=float))
         self.tf.publish(TFMessage(transforms=[self.transform('base_link', 'go2w_lidar', relative_p, relative_q, msg.header.stamp)]))
         return msg
+
+    def sensor_publisher(self, topic, message_type):
+        if topic not in self.sensor_publishers:
+            self.sensor_publishers[topic] = self.node.create_publisher(message_type, topic, QoSProfile(depth=20))
+        return self.sensor_publishers[topic]
+
+    def publish_sensor_image(self, topic, array, exposure_s, frame_id, encoding, K=None, baseline_m=0.):
+        image = Image()
+        image.header.stamp, image.header.frame_id = stamp(exposure_s), frame_id
+        data = np.ascontiguousarray(array, dtype=np.float32 if encoding=='32FC1' else np.uint8)
+        image.height, image.width = data.shape[:2]
+        image.encoding, image.is_bigendian = encoding, False
+        image.step = image.width * (4 if encoding=='32FC1' else 3)
+        image.data = data.tobytes()
+        self.sensor_publisher(topic, Image).publish(image)
+        if K is not None:
+            info = CameraInfo(); info.header = image.header
+            info.height, info.width = image.height, image.width
+            info.distortion_model, info.d = 'plumb_bob', [0.]*5
+            info.k = np.asarray(K,dtype=float).reshape(-1).tolist()
+            info.r = np.eye(3).reshape(-1).tolist()
+            k = np.asarray(K,dtype=float)
+            info.p = [k[0,0],0.,k[0,2],-k[0,0]*baseline_m,0.,k[1,1],k[1,2],0.,0.,0.,1.,0.]
+            self.sensor_publisher(topic.rsplit('/',1)[0]+'/camera_info', CameraInfo).publish(info)
+
+    def publish_sensor_imu(self, reading):
+        msg = Imu(); msg.header.stamp = stamp(float(reading['time'])); msg.header.frame_id='go2w_imu_link'
+        msg.orientation.w=1.; msg.orientation_covariance[0]=-1.
+        msg.linear_acceleration.x,msg.linear_acceleration.y,msg.linear_acceleration.z=map(float,reading['linear_acceleration'])
+        msg.angular_velocity.x,msg.angular_velocity.y,msg.angular_velocity.z=map(float,reading['angular_velocity'])
+        self.sensor_publisher('/go2w/imu/data',Imu).publish(msg)
 
     def close(self):
         self.node.destroy_node()

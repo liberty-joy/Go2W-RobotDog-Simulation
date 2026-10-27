@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "protocol_status": "frozen before stage6 test capture; no test-set tuning",
+  "lidar_profile": "configs/sensors/generic_rotary_64.json",
+  "rig_config": "configs/sensors/stage2_rig.json",
+  "stereo_config": "configs/sensors/stage3_stereo.json",
+  "sgbm_config": "configs/sensors/stage3_sgbm.json",
+  "warmup_s": 1.0,
+  "scene_duration_s": 8.0,
+  "scene_settle_s": 0.8,
+  "sample_offsets_s": [1.5, 2.5, 3.5, 4.5, 5.5, 6.5],
+  "pair_tolerance_ms": 50.0,
+  "exact_image_tolerance_ns": 0,
+  "minimum_free_disk_gib": 8.0,
+  "expected_uncompressed_recording_gib": 1.6,
+  "ros_domain_id": 97,
+  "qos": "reliable keep_last 20 sensors; reliable transient_local tf_static",
+  "manual_red_mask": {"r_min": 85, "r_over_g": 1.45, "r_over_b": 1.4, "min_pixels": 150},
+  "association": {"z_layer_tolerance_m": 0.12, "min_lidar_points": 8, "min_stereo_pixels": 80,
+    "max_lidar_stereo_disagreement_m": 0.1, "max_range_mad_m": 0.15},
+  "scenes": [
+    {"scene_id": "dev_room_a", "object_id": "dev_panel_a", "split": "development", "center_world_m": [2.3, -0.10, 0.55], "width_m": 1.0, "height_m": 0.9, "texture": "random", "seed": 61001},
+    {"scene_id": "dev_room_b", "object_id": "dev_panel_b", "split": "development", "center_world_m": [2.8, 0.12, 0.62], "width_m": 0.9, "height_m": 0.85, "texture": "textureless", "seed": 61002},
+    {"scene_id": "test_room_c", "object_id": "test_panel_c", "split": "heldout_test", "center_world_m": [3.2, -0.16, 0.58], "width_m": 1.1, "height_m": 1.0, "texture": "random", "seed": 62031},
+    {"scene_id": "test_room_d", "object_id": "test_panel_d", "split": "heldout_test", "center_world_m": [4.0, 0.18, 0.65], "width_m": 1.0, "height_m": 1.0, "texture": "repetitive", "seed": 62047}
+  ],
+  "limitations": "single target per isolated procedural scene; robot commanded stationary; no autonomy metric; no trained semantic model; no dynamic deskew claim"
+}

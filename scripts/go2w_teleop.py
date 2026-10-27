@@ -28,10 +28,13 @@ p.add_argument('--stage4-lidar-config',type=Path,help='Optional Stage 4 static a
 p.add_argument('--stage4-lidar-output',type=Path,help='New output directory for Stage 4 lidar captures')
 p.add_argument('--stage5-fusion-config',type=Path,help='Optional Stage 5 synchronized camera/lidar capture configuration')
 p.add_argument('--stage5-fusion-output',type=Path,help='New output directory for Stage 5 fusion captures')
+p.add_argument('--sensor-pipeline-config',type=Path,help='Independent Stage 6 ROS sensor configuration')
+p.add_argument('--sensor-pipeline-output',type=Path)
 a = p.parse_args()
+if a.sensor_pipeline_config and not a.ros2:p.error('--sensor-pipeline-config requires --ros2')
 from isaacsim import SimulationApp
 app = SimulationApp({'headless': a.headless, 'width': 1280, 'height': 800,
-    'extra_args': ['--/renderer/raytracingMotion/enabled=true'] if (a.sensor_selection or a.sensor_rig_config or a.stage3_stereo_config or a.stage4_lidar_config or a.stage5_fusion_config) else []})
+    'extra_args': ['--/renderer/raytracingMotion/enabled=true'] if (a.sensor_selection or a.sensor_rig_config or a.stage3_stereo_config or a.stage4_lidar_config or a.stage5_fusion_config or a.sensor_pipeline_config) else []})
 try:
     import numpy as np
     import carb.input
@@ -104,9 +107,9 @@ try:
     if a.stage3_stereo_config:
         import json
         camera_frequency=json.loads(a.stage3_stereo_config.read_text())['stereo']['frequency_hz']
-    if a.stage5_fusion_config:
+    if a.stage5_fusion_config or a.sensor_pipeline_config:
         import json
-        stage5_camera_config=json.loads(a.stage5_fusion_config.read_text())
+        stage5_camera_config=json.loads((a.sensor_pipeline_config or a.stage5_fusion_config).read_text())
         camera_frequency=json.loads((root/stage5_camera_config['stereo_config']).read_text())['stereo']['frequency_hz']
     camera=Camera(prim_path=base_path+'/FrontCamera', resolution=(640,480), frequency=camera_frequency,
                   translation=np.array([0.32,0,0.08]))
@@ -167,6 +170,11 @@ try:
         if not a.stage5_fusion_output:raise ValueError('--stage5-fusion-output is required')
         from sensor_pipeline.stage5_fusion_capture import Stage5FusionCapture
         stage5_fusion=Stage5FusionCapture(a.stage5_fusion_config,a.stage5_fusion_output,root,stage,base_path,camera)
+    stage6_sensors=None
+    if a.sensor_pipeline_config:
+        if not a.sensor_pipeline_output:raise ValueError('--sensor-pipeline-output is required')
+        from sensor_pipeline.stage6_ros_sensors import Stage6RosSensors
+        stage6_sensors=Stage6RosSensors(a.sensor_pipeline_config,a.sensor_pipeline_output,root,stage,base_path,camera)
     # initialize() attaches RGB by default.
     faulthandler.cancel_dump_traceback_later()
     set_camera_view(eye=np.array([2,2,1.3]),target=np.array([0,0,0.3]))
@@ -215,7 +223,7 @@ try:
     ros=None
     if a.ros2:
         from go2w_ros2 import Go2WRos2
-        ros=Go2WRos2(robot,camera,image_reliable=a.ros_image_reliable)
+        ros=Go2WRos2(robot,camera,image_reliable=a.ros_image_reliable,evaluation_only_odometry=bool(a.sensor_pipeline_config))
     steps=0; saved=0; before=None; cycle=0; needs_reset=False
     reset_robot()
     next_policy_time=0.;next_ros_time=0.;next_image_time=0.
@@ -250,6 +258,7 @@ try:
             v=float(stage4_lidar.config['motion_speed_m_s']);yaw=0.0
         if stage5_fusion is not None:
             v,yaw=stage5_fusion.command()
+        if stage6_sensors is not None:v,yaw=stage6_sensors.command()
         if 'SPACE' in keys:
             v=yaw=0
             if ros is not None:ros.clear_command()
@@ -317,9 +326,12 @@ try:
         if stage5_fusion is not None:
             stage5_fusion.update(world.current_time,robot)
             if stage5_fusion.done:break
+        if stage6_sensors is not None:
+            stage6_sensors.update(world.current_time,robot,ros)
+            if stage6_sensors.done:break
         if ros is not None:
             if world.current_time+1e-6>=next_ros_time:
-                with_image=world.current_time+1e-6>=next_image_time
+                with_image=stage6_sensors is None and world.current_time+1e-6>=next_image_time
                 ros.publish(world.current_time,with_image=with_image)
                 next_ros_time=world.current_time+1/30
                 if with_image:next_image_time=world.current_time+1/15
@@ -365,6 +377,7 @@ try:
     if stage3_stereo is not None:stage3_stereo.finish()
     if stage4_lidar is not None:stage4_lidar.finish()
     if stage5_fusion is not None:stage5_fusion.finish()
+    if stage6_sensors is not None:stage6_sensors.finish()
     if ros is not None:ros.close()
     if subscription is not None:interface.unsubscribe_to_keyboard_events(keyboard,subscription)
     print('GO2W_SIMULATION_COMPLETE',{'steps_in_last_cycle':steps,'mode':control_mode},flush=True)
