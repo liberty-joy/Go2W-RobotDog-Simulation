@@ -2,7 +2,7 @@
 
 **先读：[00_复现总览与文档索引](docs/00_复现总览与文档索引.md)**。包含本机命令行复现、文档编号规则、工作区职责与最新阶段入口。
 
-当前传感阶段状态：[progress.md](docs/sensor_pipeline/progress.md)；最新验收：[阶段7已知地图导航与巡检工程回归](docs/sensor_pipeline/07_closed_loop.md)。下方训练记录为历史结果，不能代替本次执行。
+当前传感阶段状态：[progress.md](docs/sensor_pipeline/progress.md)；最新验收：[阶段8训练必要性与独立最终评估](docs/sensor_pipeline/08_training.md)。下方训练记录为历史结果，不能代替本次执行。
 
 本地工作区：`/home/joy/桌面/RobotDog`。Isaac Sim / Isaac Lab 环境位于 `/home/joy/robotics`。
 
@@ -18,3 +18,5 @@
 - [视觉雷达仿真实施提示词](docs/视觉雷达仿真实施提示词.md)：复制总提示词，再依次执行阶段 0–10。
 
 阶段7新增已知地图雷达估计定位、A*最小导航与受限巡检任务。复现：`scripts/run_stage7_suite.sh 新输出目录`；本次12次固定工程回归完成10次任务，2次过期证据安全拒绝，A/B完成数相同。设备属性人工登记，SqueezeNet只做外观一致性；Nav2/SLAM与通用语言/设备语义仍未接入。详见阶段7文档，不能把此工程冒烟当作一般任务成功率。
+
+阶段8结论为当前不需要训练：完成36项经典SGBM调参、8新验证+8新最终评估，挑战者因验证坏接受升高未晋升，原运动权重/控制未改。查看`docs/sensor_pipeline/08_training.md`；一键复现`scripts/run_stage8.sh 新输出目录`。

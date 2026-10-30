@@ -45,6 +45,8 @@ class Stage3StereoSmoke:
             camera.set_focal_length(s["focal_length_m"])
             camera.set_horizontal_aperture(2 * s["focal_length_m"] * math.tan(math.radians(s["horizontal_fov_deg"] / 2)))
             camera.set_clipping_range(0.05, 100.0)
+        if cap.get('shared_render_readout',False):
+            for camera in (public_camera,self.left,self.right):camera.set_frequency(-1)
         # Isaac's geometric distance-to-image-plane annotator is a separate evaluation stream.
         # It is saved under ground_truth/ and is never passed into StereoSGBM.
         self.left.attach_annotator("distance_to_image_plane")
@@ -67,7 +69,7 @@ class Stage3StereoSmoke:
         for distance in cap["distances_optical_z_m"]:
             split = "development" if distance in cap["development_distances_m"] else "heldout_test"
             for scene_class in cap["scene_classes"]:
-                self.scenarios.append({"scenario_id": f"{split}_{distance:g}m_{scene_class}",
+                self.scenarios.append({"scenario_id": f"{split}_{distance:g}m_{scene_class}".replace(".","p").replace("-","neg"),
                                        "split": split, "distance_m": float(distance), "scene_class": scene_class})
         self.index = 0
         self.wait_frames = 0
